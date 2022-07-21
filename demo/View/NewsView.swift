@@ -2,11 +2,10 @@ import UIKit
 import Combine
 import Swinject
 
-class NewsView: UIViewController {
+class NewsView: UIViewController{
   
   @IBOutlet var tableview: UITableView!
   var subscriptions = Set<AnyCancellable>()
-  
   let viewModel = NewsViewModel()
   var news = News()
   
@@ -19,7 +18,7 @@ class NewsView: UIViewController {
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     
-    viewModel.decodeNews()
+    viewModel.News(by: ["q":"trump"])
       .receive(on: DispatchQueue.main)
       .sink(
         receiveCompletion: {

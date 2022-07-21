@@ -2,30 +2,39 @@ import UIKit
 import Combine
 
 protocol NewsProtocol {
-  func decodeData(from Network: AnyPublisher<Data, GenericError>) -> AnyPublisher<News, GenericError>
+  var fetchNews:AnyPublisher<News, GenericError> { get }
 }
 
-class NewsPublisher: NewsProtocol {
-  private var network: Network
+final class NewsPublisher: NewsProtocol {
+  private var url:URL
   
   //MARK: Initializers
-  init() {
-    self.network = Network()
+  init(keyword: [String:String]) {
+    self.url = NewsUrl().path(keywords: keyword)!
+  }
+  convenience init() {
+    self.init(keyword: [:])
   }
   
-    
   //MARK: News Protocol
-  func decodeData(from Network: AnyPublisher<Data, GenericError>) -> AnyPublisher<News, GenericError> {
-    return network.request()
-      .eraseToAnyPublisher()
+  var fetchNews: AnyPublisher<News, GenericError> {
     
+    return URLSession.shared.dataTaskPublisher(for: url)
+      .tryMap { element -> Data in
+        guard let httpResponse = element.response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+           throw URLError(.badServerResponse)
+        }
+        return element.data
+      }
       .decode(type: News.self, decoder: JSONDecoder())
       .mapError { error -> GenericError in
         switch error {
+          case is URLError:
+            return .networkFailed
           case is Swift.DecodingError:
             return .decodingFailed
           default:
-            return .networkFailed
+            return .unknown
         }
       }
       .eraseToAnyPublisher()
@@ -35,6 +44,7 @@ class NewsPublisher: NewsProtocol {
 enum GenericError: Error {
   case decodingFailed
   case networkFailed
+  case unknown
 }
 
 

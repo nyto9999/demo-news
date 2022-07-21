@@ -1,21 +1,22 @@
 import UIKit
 import Combine
 
-final class NewsViewModel: ObservableObject {
-  @Published var news = News()
-  init() {}
+protocol NewsViewModelProtocol {
+  func News() -> AnyPublisher<News, GenericError>
+  func News(by keywordDict: [String:String]) -> AnyPublisher<News, GenericError>
 }
 
-extension NewsViewModel {
+final class NewsViewModel {}
+
+extension NewsViewModel: NewsViewModelProtocol {
   
-  //MARK: publishers action
-  func decodeNews() -> AnyPublisher<News, GenericError> {
-    return NewsPublisher().decodeData(from: Network().request())
+  //MARK: NewsViewModelProtocol
+  func News(by keywordDict: [String : String]) -> AnyPublisher<News, GenericError> {
+    return NewsPublisher(keyword: keywordDict).fetchNews
   }
   
-  func decodeNews(by keywords: [String:String]) -> AnyPublisher<News, GenericError> {
-    return NewsPublisher()
-      .decodeData(from: Network(keyword: keywords).request())
+  func News() -> AnyPublisher<News, GenericError> {
+    return NewsPublisher().fetchNews
   }
 }
 
