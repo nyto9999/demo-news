@@ -22,7 +22,7 @@ class NewsView: UIViewController{
     tableview.delegate = self
     tableview.dataSource = self
     
-    viewModel.newsTopHeadlines()
+    viewModel.search(searchText: "trump", isAscending: true)
       .receive(on: DispatchQueue.main)
       .sink { completion in
         print(completion)

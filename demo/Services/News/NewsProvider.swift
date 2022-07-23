@@ -3,6 +3,7 @@ import Foundation
 enum NewsProvider {
   case getTopheadlines
   case getEverything
+  case search(searchText: String)
 }
  
 // MARK: Endpoint
@@ -26,6 +27,8 @@ extension NewsProvider: Endpoint {
         return "/v2/top-headlines"
       case .getEverything:
         return "/v2/everything"
+      case .search(searchText:):
+        return "/v2/everything"
     }
   }
   
@@ -39,12 +42,14 @@ extension NewsProvider: Endpoint {
         return nil
       case .getEverything:
         return nil
+      case .search(searchText: let searchText):
+        return ["q" : searchText]
     }
   }
  
   var method: HTTPMethod {
     switch self {
-      case .getTopheadlines,.getEverything:
+      case .getTopheadlines,.getEverything,.search(searchText:):
         return .get
     }
   }

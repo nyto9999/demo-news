@@ -3,6 +3,8 @@ import Combine
 
 final class NewsClient: APIClient, NewsClientProtocol {
   
+  
+  
   var session: URLSession
   
   //MARK: Initializers
@@ -16,7 +18,6 @@ final class NewsClient: APIClient, NewsClientProtocol {
     self.init(configuration: configuration)
   }
   
-  
   // MARK: News List
   func getTopheadlines() -> AnyPublisher<NewsResult, APIError> {
     let request = NewsProvider.getTopheadlines.reuqest
@@ -27,6 +28,12 @@ final class NewsClient: APIClient, NewsClientProtocol {
     let request = NewsProvider.getEverything.reuqest
     return fetch(with: request, decodeType: NewsResult())
   }
+  
+  func search(searchText: String) -> AnyPublisher<NewsResult, APIError> {
+    let request = NewsProvider.search(searchText: searchText).reuqest
+    return fetch(with: request, decodeType: NewsResult())
+  }
+  
 }
 
 enum APIError: Error {
