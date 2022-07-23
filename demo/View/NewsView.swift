@@ -1,6 +1,5 @@
 import UIKit
 import Combine
-import Swinject
 
 class NewsView: UIViewController{
   
@@ -22,12 +21,8 @@ class NewsView: UIViewController{
     super.viewDidLoad()
     tableview.delegate = self
     tableview.dataSource = self
-  }
-  
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
     
-    viewModel.News()
+    viewModel.newsTopHeadlines()
       .receive(on: DispatchQueue.main)
       .sink { completion in
         print(completion)
@@ -36,19 +31,16 @@ class NewsView: UIViewController{
         self.news = news
       }
       .store(in: &subscriptions)
-
   }
-  
+   
   //Segue
-  func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject!) {
-          if let cell = sender as? UITableViewCell {
-              let i = self.tableview.indexPath(for: cell)!.row
-              if segue.identifier == "toNewsDetail" {
-                  let vc = segue.destination as! NewsDetail
-                vc.link = self.news[i].url
-              }
-          }
-      }
+  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+    
+    if let indexPath = tableview.indexPathForSelectedRow {
+      let vc = segue.destination as! NewsDetail
+      vc.link = self.news[indexPath.row].url
+    }
+  }
 }
 
 extension NewsView: UITableViewDelegate, UITableViewDataSource {

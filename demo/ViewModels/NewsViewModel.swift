@@ -2,27 +2,30 @@ import UIKit
 import Combine
 
 protocol NewsViewModelProtocol {
-  func News() -> AnyPublisher<[News], NetworkError>
+  func newsTopHeadlines(asc: Bool) -> AnyPublisher<[News], APIError>
 }
 
 final class NewsViewModel {
-  var newsPublisher: NewsPublisher
   
-  init(newPublisher: NewsPublisher = NewsPublisher()) {
-    self.newsPublisher = newPublisher
+  var client: NewsClientProtocol
+  
+  init(client: NewsClient = NewsClient()) {
+    self.client = client
   }
 }
 
 extension NewsViewModel: NewsViewModelProtocol {
   
   //MARK: NewsViewModelProtocol
-  func News() -> AnyPublisher<[News], NetworkError> {
-    return newsPublisher.fetchNews
+  func newsTopHeadlines(asc: Bool = true) -> AnyPublisher<[News], APIError> {
+    return client.getTopheadlines()
       .map { result in
         result.news.sorted { $0 > $1 }
       }
       .eraseToAnyPublisher()
   }
+  
+  
 }
 
 

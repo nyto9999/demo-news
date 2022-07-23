@@ -1,19 +1,25 @@
 import UIKit
 import WebKit
 
-class NewsDetail: UIViewController, WKUIDelegate {
-  var link : String = ""
+class NewsDetail: UIViewController, WKNavigationDelegate {
+  var link = ""
+  
+  @IBOutlet weak var spinner: UIActivityIndicatorView!
   @IBOutlet weak var webview: WKWebView!
   
   override func viewDidLoad() {
+    
     super.viewDidLoad()
-    let myURL = URL(string:"\(link)")
-    let myRequest = URLRequest(url: myURL!)
-    webview.load(myRequest)
+    webview.load(URLRequest(url: URL(string: link)!))
+    webview.navigationDelegate = self
+    
   }
   
-  override func loadView() {
-    webview.uiDelegate = self
-    view = webview
+  func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+    spinner.startAnimating()
+  }
+  func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+    spinner.stopAnimating()
   }
 }
+
