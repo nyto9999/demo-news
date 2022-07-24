@@ -1,12 +1,12 @@
 import UIKit
 import Combine
+import Resolver
 
 class NewsView: UIViewController{
   
   @IBOutlet var tableview: UITableView!
   
-  
-  let viewModel = NewsViewModel()
+  @Injected private var viewModel: NewsViewModel
   var news = [News]()
   var subscriptions = Set<AnyCancellable>()
   
@@ -22,7 +22,7 @@ class NewsView: UIViewController{
     tableview.delegate = self
     tableview.dataSource = self
     
-    viewModel.search(searchText: "trump", isAscending: true)
+    viewModel.search(searchText: "trump")
       .receive(on: DispatchQueue.main)
       .sink { completion in
         print(completion)

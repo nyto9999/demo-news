@@ -21,16 +21,20 @@ extension Endpoint {
     components.scheme = scheme
     components.host = host
     components.path = path
+    
     var queryItems = [
-      URLQueryItem(name: "apiKey", value: apiKey),
       URLQueryItem(name: "country", value: RegionCodeHelper.getCurrentCountryCode())
     ]
     
     if let params = params, method == .get {
+      queryItems.removeAll()
       queryItems.append(contentsOf: params.map {
         URLQueryItem(name: "\($0)", value: "\($1)")
       })
     }
+    
+    ///api key at the end
+    queryItems.append(URLQueryItem(name: "apiKey", value: apiKey))
      
     components.queryItems = queryItems
     return components

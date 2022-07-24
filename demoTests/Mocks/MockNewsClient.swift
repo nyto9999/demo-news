@@ -1,19 +1,18 @@
-import UIKit
-import Combine
+import Foundation
 import Resolver
+import Combine
 
-final class NewsClient: APIClient, NewsClientProtocol {
-   
-  @Injected internal var session: URLSession
+class MockNewsClient:APIClient, NewsClientProtocol {
   
-  // MARK: News List
+  var session: URLSession = URLSession(configuration: .default)
+  
   func getTopheadlines() -> AnyPublisher<NewsResult, APIError> {
     let request = NewsProvider.getTopheadlines.reuqest
     return fetch(with: request, decodeType: NewsResult())
   }
   
   func getEverything() -> AnyPublisher<NewsResult, APIError> {
-    let request = NewsProvider.getEverything.reuqest
+    let request = NewsProvider.getTopheadlines.reuqest
     return fetch(with: request, decodeType: NewsResult())
   }
   
@@ -23,11 +22,3 @@ final class NewsClient: APIClient, NewsClientProtocol {
   }
   
 }
-
-enum APIError: Error {
-  case decodingFailed(error: Swift.DecodingError)
-  case networkFailed(error: URLError, url: URL)
-  case unknown
-}
-
-

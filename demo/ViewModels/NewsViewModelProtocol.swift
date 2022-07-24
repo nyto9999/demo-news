@@ -5,12 +5,12 @@ protocol NewsViewModelProtocol {
   typealias newsPublisher = AnyPublisher<[News], APIError>
   
   // news topheadlines list
-  func newsTopHeadlines(isAscending: Bool) -> newsPublisher
+  func newsTopHeadlines() -> newsPublisher
   
   
   // news everything list
-  func newsEverything(isAscending: Bool) -> newsPublisher
+  func newsEverything() -> newsPublisher
   
   //search list
-  func search(searchText: String, isAscending: Bool) -> newsPublisher
+  func search(searchText: String) -> newsPublisher
 }
