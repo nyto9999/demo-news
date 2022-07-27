@@ -2,9 +2,8 @@ import UIKit
 import Combine
 import Resolver
 
-final class NewsViewModel {
+class NewsViewModel {
   @Injected private var client: NewsClient
-  private var asc = true
 }
 
 extension NewsViewModel: NewsViewModelProtocol {
@@ -13,7 +12,8 @@ extension NewsViewModel: NewsViewModelProtocol {
   
   //MARK: - news client actions
   func newsEverything() -> newsPublisher {
-    return client.getEverything().map { $0.news.sorted { $0 > $1 } }.eraseToAnyPublisher()
+    return client.getEverything().map { $0.news.sorted { $0 > $1 } }	
+      .eraseToAnyPublisher()
   }
   
   func newsTopHeadlines() -> newsPublisher {

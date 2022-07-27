@@ -1,15 +1,21 @@
 import UIKit
 import Combine
 import Resolver
+import Alamofire
 
 class NewsView: UIViewController{
   
-  @IBOutlet var tableview: UITableView!
-  
+  //properties
   @Injected private var viewModel: NewsViewModel
   var news = [News]()
   var subscriptions = Set<AnyCancellable>()
   
+  //layouts
+  lazy var tableview:UITableView = {
+    let tableview = UITableView(frame: view.frame)
+    tableview.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+    return tableview
+  }()
   var dateFormatter: DateFormatter {
     let df = DateFormatter()
     df.locale = Locale(identifier: "UTC")
@@ -19,9 +25,15 @@ class NewsView: UIViewController{
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    view.addSubview(tableview)
+    
     tableview.delegate = self
     tableview.dataSource = self
     
+    fetchingViewModel()
+  }
+  
+  private func fetchingViewModel() {
     viewModel.search(searchText: "獵人")
       .receive(on: DispatchQueue.main)
       .sink { completion in
@@ -31,20 +43,10 @@ class NewsView: UIViewController{
           case .failure:
             self.tableview.isHidden = true
         }
-        
       } receiveValue: { news in
         self.news = news
       }
       .store(in: &subscriptions)
-  }
-   
-  //Segue
-  override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    
-    if let indexPath = tableview.indexPathForSelectedRow {
-      let vc = segue.destination as! NewsDetail
-      vc.link = self.news[indexPath.row].url
-    }
   }
 }
 
@@ -63,16 +65,23 @@ extension NewsView: UITableViewDelegate, UITableViewDataSource {
   private func configure(_ content: UIListContentConfiguration, with indexPath: IndexPath) -> UIListContentConfiguration {
     
     var content = content
-    
     let publishedAt = news[indexPath.row].publishedAt
     let dateString = dateFormatter.date(from: publishedAt)
-    
+ 
     content.text = news[indexPath.row].title
     content.secondaryText = dateString!.formatted(date: .complete, time: .shortened)
+  
     
     content.textToSecondaryTextVerticalPadding = CGFloat(40.0)
     
     return content
+  }
+  
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    let selectedNews = news[indexPath.row].url
+    let vc = NewsDetail()
+    vc.link = selectedNews
+    self.navigationController?.pushViewController(vc, animated: true)
   }
 }
 

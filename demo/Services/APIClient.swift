@@ -8,7 +8,7 @@ protocol APIClient {
 //MARK: Network request then decode
 extension APIClient {
   
-  func fetch<T: Decodable>(with request: URLRequest, decodeType: T) -> AnyPublisher<T, APIError> {
+  func fetch(with request: URLRequest, decodeType: NewsResult) -> AnyPublisher<NewsResult, APIError> {
     
     return session.dataTaskPublisher(for: request)
       .tryMap { element -> Data in
@@ -17,7 +17,7 @@ extension APIClient {
         }
         return element.data
       }
-      .decode(type: T.self, decoder: JSONDecoder())
+      .decode(type: NewsResult.self, decoder: JSONDecoder())
       .mapError { error -> APIError in
         switch error {
           case let URLError as URLError:
@@ -30,4 +30,23 @@ extension APIClient {
       }
       .eraseToAnyPublisher()
   }
+  
+  //  let employeesPublisher = companyPublisher
+  //     .flatMap { response in
+  //        response.employees.publisher.setFailureType(Error.self)
+  //     }
+  //     .flatMap { employee -> AnyPublisher<(Employee, UIImage), Error> in
+  //
+  //        let profileImageUrl = URL(string: employee.profileImages.large)!
+  //
+  //        return URLSession.shared.dataTaskPublisher(for url: profileImageUrl)
+  //            .compactMap { UIImage(data: $0.data) }
+  //            .mapError { $0 as Error }
+  //
+  //            .map { (employee, $0) } // "zip" here into a tuple
+  //
+  //            .eraseToAnyPublisher()
+  //
+  //     }
+  //     .collect()
 }

@@ -25,8 +25,7 @@ final class NewsClient: APIClient, NewsClientProtocol {
 }
 
 enum APIError: Error {
-  
-  
+   
   case decodingFailed(error: Swift.DecodingError)
   case networkFailed(error: URLError, url: URL)
   case unknown
