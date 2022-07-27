@@ -22,11 +22,16 @@ class NewsView: UIViewController{
     tableview.delegate = self
     tableview.dataSource = self
     
-    viewModel.search(searchText: "trump")
+    viewModel.search(searchText: "獵人")
       .receive(on: DispatchQueue.main)
       .sink { completion in
-        print(completion)
-        self.tableview.reloadData()
+        switch completion {
+          case .finished:
+            self.tableview.reloadData()
+          case .failure:
+            self.tableview.isHidden = true
+        }
+        
       } receiveValue: { news in
         self.news = news
       }
@@ -50,7 +55,14 @@ extension NewsView: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-    var content = cell.defaultContentConfiguration()
+    let content = cell.defaultContentConfiguration()
+    cell.contentConfiguration = configure(content, with: indexPath)
+    return cell
+  }
+  
+  private func configure(_ content: UIListContentConfiguration, with indexPath: IndexPath) -> UIListContentConfiguration {
+    
+    var content = content
     
     let publishedAt = news[indexPath.row].publishedAt
     let dateString = dateFormatter.date(from: publishedAt)
@@ -59,8 +71,8 @@ extension NewsView: UITableViewDelegate, UITableViewDataSource {
     content.secondaryText = dateString!.formatted(date: .complete, time: .shortened)
     
     content.textToSecondaryTextVerticalPadding = CGFloat(40.0)
-    cell.contentConfiguration = content
-    return cell
+    
+    return content
   }
 }
 

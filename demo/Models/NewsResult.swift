@@ -2,6 +2,7 @@ import Foundation
  
 class NewsResult: Decodable {
   
+  
   enum NewsCodingKeys: String, CodingKey {
     case news = "articles"
   }
