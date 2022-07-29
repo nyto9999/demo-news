@@ -16,12 +16,12 @@ class TabBarController:UITabBarController, UITabBarControllerDelegate {
   
   private func tabItemsFactory() -> [UIViewController] {
     let views = [
-      NewsView(),
       HeadlinesView(),
+      RegionView()
     ]
     let icons = [
-      UITabBarItem(title: "News", image: UIImage(systemName: "newspaper"), tag: 0),
-      UITabBarItem(title: "Headlines", image: UIImage(systemName: "flame.circle.fill"), tag: 1),
+      UITabBarItem(title: "Headlines", image: UIImage(systemName: "flame.circle.fill"), tag: 0),
+      UITabBarItem(title: "Region", image: UIImage(systemName: "gearshape.circle.fill"), tag: 1),
     ]
     
     for (index, view) in views.enumerated() {

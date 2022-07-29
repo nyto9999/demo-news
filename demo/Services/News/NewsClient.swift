@@ -12,17 +12,18 @@ final class NewsClient: APIClient, NewsClientProtocol {
     return fetch(with: request, decodeType: NewsResult())
   }
   
-  func getEverything() -> AnyPublisher<NewsResult, APIError> {
-    let request = NewsProvider.getEverything.reuqest
-    return fetch(with: request, decodeType: NewsResult())
-  }
-  
   func search(searchText: String) -> AnyPublisher<NewsResult, APIError> {
     let request = NewsProvider.search(searchText: searchText).reuqest
     return fetch(with: request, decodeType: NewsResult())
   }
   
+  public func bgDownloadNews() {
+    let request = NewsProvider.getTopheadlines.reuqest
+    return jsonDownloader(with: request, type: Constants.NewsType.everything.rawValue)
+  }
 }
+
+
 
 enum APIError: Error {
    

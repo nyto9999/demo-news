@@ -7,7 +7,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   
   func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
     guard let windowScene = (scene as? UIWindowScene) else { return }
-  
+    
+    BGTaskScheduler.shared.register(
+      forTaskWithIdentifier: Constants.backgroundTaskIdentifier,
+      using: nil)
+      { (task) in
+        
+        task.expirationHandler = {
+          print("failed")
+        }
+        
+        
+        task.setTaskCompleted(success: true)
+      }
+    
     window = UIWindow(frame: windowScene.coordinateSpace.bounds)
     window?.windowScene = windowScene
     window?.makeKeyAndVisible()
@@ -33,12 +46,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   }
   
   func scheduleAppRefresh() {
-    print("scheduling")
-    let request = BGAppRefreshTaskRequest(identifier: AppConstants.backgroundTaskIdentifier)
+    
+    let request = BGAppRefreshTaskRequest(identifier: Constants.backgroundTaskIdentifier)
     
     //dont start refreshing my app untill atleat 1 hour when I schedule it
     request.earliestBeginDate = Date(timeIntervalSinceNow: 3)
     do {
+      print("hi")
       try BGTaskScheduler.shared.submit(request)
     }
     catch {

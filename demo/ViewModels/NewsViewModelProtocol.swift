@@ -7,10 +7,6 @@ protocol NewsViewModelProtocol {
   // news topheadlines list
   func newsTopHeadlines() -> newsPublisher
   
-  
-  // news everything list
-  func newsEverything() -> newsPublisher
-  
   //search list
   func search(searchText: String) -> newsPublisher
 }

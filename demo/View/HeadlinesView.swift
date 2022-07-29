@@ -25,7 +25,7 @@ class HeadlinesView: UIViewController{
   override func viewDidLoad() {
     super.viewDidLoad()
     view.addSubview(tableview)
-    
+    self.navigationController?.title = "Headlines"
     tableview.delegate = self
     tableview.dataSource = self
     

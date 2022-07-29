@@ -22,9 +22,14 @@ extension Endpoint {
     components.host = host
     components.path = path
     
+    
     var queryItems = [
       URLQueryItem(name: "country", value: RegionCodeHelper.getCurrentCountryCode())
     ]
+    
+    if path == "/v2/everything" {
+      queryItems.removeAll()
+    }
     
     if let params = params, method == .get {
       queryItems.removeAll()

@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import SwiftUI
 
 protocol APIClient {
   var session: URLSession { get }
@@ -8,7 +9,7 @@ protocol APIClient {
 //MARK: Network request then decode
 extension APIClient {
   
-  func fetch(with request: URLRequest, decodeType: NewsResult) -> AnyPublisher<NewsResult, APIError> {
+  func fetch<T: Decodable>(with request: URLRequest, decodeType: T) -> AnyPublisher<T, APIError> {
     
     return session.dataTaskPublisher(for: request)
       .tryMap { element -> Data in
@@ -17,7 +18,7 @@ extension APIClient {
         }
         return element.data
       }
-      .decode(type: NewsResult.self, decoder: JSONDecoder())
+      .decode(type: T.self, decoder: JSONDecoder())
       .mapError { error -> APIError in
         switch error {
           case let URLError as URLError:
@@ -31,22 +32,32 @@ extension APIClient {
       .eraseToAnyPublisher()
   }
   
-  //  let employeesPublisher = companyPublisher
-  //     .flatMap { response in
-  //        response.employees.publisher.setFailureType(Error.self)
-  //     }
-  //     .flatMap { employee -> AnyPublisher<(Employee, UIImage), Error> in
-  //
-  //        let profileImageUrl = URL(string: employee.profileImages.large)!
-  //
-  //        return URLSession.shared.dataTaskPublisher(for url: profileImageUrl)
-  //            .compactMap { UIImage(data: $0.data) }
-  //            .mapError { $0 as Error }
-  //
-  //            .map { (employee, $0) } // "zip" here into a tuple
-  //
-  //            .eraseToAnyPublisher()
-  //
-  //     }
-  //     .collect()
+  func jsonDownloader(with request: URLRequest, type: String) {
+    
+    session.dataTask(with: request) { data, response, error in
+      guard
+        let data = data,
+        error == nil
+      else { return }
+      
+      if let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+        
+        
+        let pathWithFileName = documentDirectory.appendingPathComponent(type).appendingPathExtension("json")
+        
+        do {
+          if FileManager.fileExists(filePath: pathWithFileName.path) {
+            print("exist")
+            try FileManager.default.removeItem(at: pathWithFileName)
+          }
+          
+          try data.write(to: pathWithFileName, options: [.atomic])
+          print(pathWithFileName)
+        }
+        catch {
+          print(error.localizedDescription)
+        }
+      }
+    }.resume()
+  }
 }

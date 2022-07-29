@@ -5,7 +5,6 @@ struct News: Codable, Comparable, Equatable {
   
   var title:String
   var publishedAt: String
-  var urlToImage: String?
   var url:String
   
   

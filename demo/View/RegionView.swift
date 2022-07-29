@@ -2,11 +2,8 @@ import UIKit
 import Combine
 import Resolver
 
-
-class NewsView: UIViewController{
+class RegionView: UIViewController{
   
-  //properties
-  @Injected private var viewModel: NewsViewModel
   var news = [News]()
   var subscriptions = Set<AnyCancellable>()
   
@@ -26,31 +23,16 @@ class NewsView: UIViewController{
   override func viewDidLoad() {
     super.viewDidLoad()
     view.addSubview(tableview)
-    
+    self.navigationController?.title = "News"
     tableview.delegate = self
     tableview.dataSource = self
+ 
     
-    fetchingViewModel()
   }
-  
-  private func fetchingViewModel() {
-    viewModel.newsEverything()
-      .receive(on: DispatchQueue.main)
-      .sink { completion in
-        switch completion {
-          case .finished:
-            self.tableview.reloadData()
-          case .failure:
-            self.tableview.isHidden = true
-        }
-      } receiveValue: { news in
-        self.news = news
-      }
-      .store(in: &subscriptions)
-  }
+ 
 }
 
-extension NewsView: UITableViewDelegate, UITableViewDataSource {
+extension RegionView: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return news.count
   }
