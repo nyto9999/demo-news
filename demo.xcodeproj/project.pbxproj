@@ -138,7 +138,7 @@
 		8D1635A128873604001D7372 /* demo */ = {
 			isa = PBXGroup;
 			children = (
-				8DEC6C5F28937D1B00D1BDD5 /* BGTasks */,
+				8DEC6C5F28937D1B00D1BDD5 /* BackgroundTasks */,
 				8D5FAE78288DB63B00F2722F /* Injection */,
 				8DFC200F28884E3B007B6E7F /* Services */,
 				8DFC200C28884E24007B6E7F /* Models */,
@@ -208,12 +208,12 @@
 			path = News;
 			sourceTree = "<group>";
 		};
-		8DEC6C5F28937D1B00D1BDD5 /* BGTasks */ = {
+		8DEC6C5F28937D1B00D1BDD5 /* BackgroundTasks */ = {
 			isa = PBXGroup;
 			children = (
 				8DEC6C6028937D3800D1BDD5 /* BGTNewsTasks.swift */,
 			);
-			path = BGTasks;
+			path = BackgroundTasks;
 			sourceTree = "<group>";
 		};
 		8DFC200C28884E24007B6E7F /* Models */ = {
