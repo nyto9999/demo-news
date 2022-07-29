@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 import SwiftUI
 
-class TabBarController: UITabBarController, UITabBarControllerDelegate {
+class TabBarController:UITabBarController, UITabBarControllerDelegate {
   override func viewDidLoad() {
     super.viewDidLoad()
     delegate = self
@@ -11,18 +11,17 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     self.viewControllers = tabItemsFactory()
+    selectedIndex = 1
   }
   
   private func tabItemsFactory() -> [UIViewController] {
     let views = [
       NewsView(),
-      NewsView(),
-      NewsView(),
+      HeadlinesView(),
     ]
     let icons = [
-      UITabBarItem(title: "News", image: UIImage(systemName: "newspaper"), tag: 1),
-      UITabBarItem(title: "Headlines", image: UIImage(systemName: "flame.circle.fill"), tag: 2),
-      UITabBarItem(title: "Country", image: UIImage(systemName: "flag.badge.ellipsis"), tag: 3),
+      UITabBarItem(title: "News", image: UIImage(systemName: "newspaper"), tag: 0),
+      UITabBarItem(title: "Headlines", image: UIImage(systemName: "flame.circle.fill"), tag: 1),
     ]
     
     for (index, view) in views.enumerated() {
@@ -36,4 +35,6 @@ class TabBarController: UITabBarController, UITabBarControllerDelegate {
     print("Should select viewController: \(viewController.tabBarItem.tag) ?")
     return true
   }
+  
+  
 }

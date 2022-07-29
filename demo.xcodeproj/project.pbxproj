@@ -27,10 +27,10 @@
 		8D61AA2C288CA2540050BEDF /* NewsClientProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D61AA2B288CA2540050BEDF /* NewsClientProtocol.swift */; };
 		8D61AA2E288CA8730050BEDF /* NewsViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D61AA2D288CA8730050BEDF /* NewsViewModelProtocol.swift */; };
 		8DEC6C43289107A200D1BDD5 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 8DEC6C42289107A200D1BDD5 /* Alamofire */; };
-		8DEC6C482891C4B700D1BDD5 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 8DEC6C472891C4B700D1BDD5 /* Swinject */; };
-		8DEC6C4B2891C4DA00D1BDD5 /* SwinjectAutoregistration in Frameworks */ = {isa = PBXBuildFile; productRef = 8DEC6C4A2891C4DA00D1BDD5 /* SwinjectAutoregistration */; };
-		8DEC6C4E2891C4FC00D1BDD5 /* SwinjectStoryboard in Frameworks */ = {isa = PBXBuildFile; productRef = 8DEC6C4D2891C4FC00D1BDD5 /* SwinjectStoryboard */; };
 		8DEC6C542891E91B00D1BDD5 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DEC6C532891E91B00D1BDD5 /* TabBarController.swift */; };
+		8DEC6C562891EEF300D1BDD5 /* HeadlinesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DEC6C552891EEF300D1BDD5 /* HeadlinesView.swift */; };
+		8DEC6C5A28935F0800D1BDD5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DEC6C5928935F0800D1BDD5 /* Constants.swift */; };
+		8DEC6C5C28936E3F00D1BDD5 /* BackgroundMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DEC6C5B28936E3F00D1BDD5 /* BackgroundMethods.swift */; };
 		8DFC200328884A38007B6E7F /* NewsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DFC1FF628875171007B6E7F /* NewsClient.swift */; };
 		8DFC200828884C41007B6E7F /* NewsResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DFC1FF8288847C6007B6E7F /* NewsResult.swift */; };
 		8DFC200928884CDE007B6E7F /* News.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DFC1FFA288847DF007B6E7F /* News.swift */; };
@@ -86,6 +86,9 @@
 		8D61AA2B288CA2540050BEDF /* NewsClientProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsClientProtocol.swift; sourceTree = "<group>"; };
 		8D61AA2D288CA8730050BEDF /* NewsViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsViewModelProtocol.swift; sourceTree = "<group>"; };
 		8DEC6C532891E91B00D1BDD5 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		8DEC6C552891EEF300D1BDD5 /* HeadlinesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadlinesView.swift; sourceTree = "<group>"; };
+		8DEC6C5928935F0800D1BDD5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		8DEC6C5B28936E3F00D1BDD5 /* BackgroundMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundMethods.swift; sourceTree = "<group>"; };
 		8DFC1FF628875171007B6E7F /* NewsClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsClient.swift; sourceTree = "<group>"; };
 		8DFC1FF8288847C6007B6E7F /* NewsResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsResult.swift; sourceTree = "<group>"; };
 		8DFC1FFA288847DF007B6E7F /* News.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = News.swift; sourceTree = "<group>"; };
@@ -99,10 +102,7 @@
 			files = (
 				8DEC6C43289107A200D1BDD5 /* Alamofire in Frameworks */,
 				8D5FAE77288DB41E00F2722F /* Resolver in Frameworks */,
-				8DEC6C4B2891C4DA00D1BDD5 /* SwinjectAutoregistration in Frameworks */,
 				8D2BA69228873A6A00A8FBC7 /* SwiftyJSON in Frameworks */,
-				8DEC6C4E2891C4FC00D1BDD5 /* SwinjectStoryboard in Frameworks */,
-				8DEC6C482891C4B700D1BDD5 /* Swinject in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -192,6 +192,8 @@
 				8D61AA22288C801B0050BEDF /* URLRequest+.swift */,
 				8D61AA1D288A2C880050BEDF /* DateHelper.swift */,
 				8D61AA26288C8D420050BEDF /* RegionCodeHelper.swift */,
+				8DEC6C5928935F0800D1BDD5 /* Constants.swift */,
+				8DEC6C5B28936E3F00D1BDD5 /* BackgroundMethods.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -231,6 +233,7 @@
 				8D1635A628873604001D7372 /* NewsView.swift */,
 				8D61AA1A2889F8300050BEDF /* NewsDetail.swift */,
 				8DEC6C532891E91B00D1BDD5 /* TabBarController.swift */,
+				8DEC6C552891EEF300D1BDD5 /* HeadlinesView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -266,9 +269,6 @@
 				8D2BA69128873A6A00A8FBC7 /* SwiftyJSON */,
 				8D5FAE76288DB41E00F2722F /* Resolver */,
 				8DEC6C42289107A200D1BDD5 /* Alamofire */,
-				8DEC6C472891C4B700D1BDD5 /* Swinject */,
-				8DEC6C4A2891C4DA00D1BDD5 /* SwinjectAutoregistration */,
-				8DEC6C4D2891C4FC00D1BDD5 /* SwinjectStoryboard */,
 			);
 			productName = demo;
 			productReference = 8D16359F28873604001D7372 /* demo.app */;
@@ -324,9 +324,6 @@
 				8D2BA69028873A6A00A8FBC7 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				8D5FAE75288DB41E00F2722F /* XCRemoteSwiftPackageReference "Resolver" */,
 				8DEC6C41289107A200D1BDD5 /* XCRemoteSwiftPackageReference "Alamofire" */,
-				8DEC6C462891C4B700D1BDD5 /* XCRemoteSwiftPackageReference "Swinject" */,
-				8DEC6C492891C4DA00D1BDD5 /* XCRemoteSwiftPackageReference "SwinjectAutoregistration" */,
-				8DEC6C4C2891C4FC00D1BDD5 /* XCRemoteSwiftPackageReference "SwinjectStoryboard" */,
 			);
 			productRefGroup = 8D1635A028873604001D7372 /* Products */;
 			projectDirPath = "";
@@ -363,12 +360,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DFC200928884CDE007B6E7F /* News.swift in Sources */,
+				8DEC6C5A28935F0800D1BDD5 /* Constants.swift in Sources */,
+				8DEC6C5C28936E3F00D1BDD5 /* BackgroundMethods.swift in Sources */,
 				8D5FAE83288DBE7800F2722F /* MockNewsClient.swift in Sources */,
 				8D61AA2C288CA2540050BEDF /* NewsClientProtocol.swift in Sources */,
 				8D61AA20288C7A2E0050BEDF /* NewsProvider.swift in Sources */,
 				8DFC200828884C41007B6E7F /* NewsResult.swift in Sources */,
 				8D61AA29288C93640050BEDF /* APIClient.swift in Sources */,
 				8D61AA23288C801B0050BEDF /* URLRequest+.swift in Sources */,
+				8DEC6C562891EEF300D1BDD5 /* HeadlinesView.swift in Sources */,
 				8D1635A328873604001D7372 /* AppDelegate.swift in Sources */,
 				8D61AA1B2889F8300050BEDF /* NewsDetail.swift in Sources */,
 				8DFC200B28884CE2007B6E7F /* NewsView.swift in Sources */,
@@ -677,30 +677,6 @@
 				minimumVersion = 5.0.0;
 			};
 		};
-		8DEC6C462891C4B700D1BDD5 /* XCRemoteSwiftPackageReference "Swinject" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Swinject/Swinject.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
-		8DEC6C492891C4DA00D1BDD5 /* XCRemoteSwiftPackageReference "SwinjectAutoregistration" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Swinject/SwinjectAutoregistration.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
-		8DEC6C4C2891C4FC00D1BDD5 /* XCRemoteSwiftPackageReference "SwinjectStoryboard" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Swinject/SwinjectStoryboard.git";
-			requirement = {
-				branch = master;
-				kind = branch;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -718,21 +694,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8DEC6C41289107A200D1BDD5 /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
-		};
-		8DEC6C472891C4B700D1BDD5 /* Swinject */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8DEC6C462891C4B700D1BDD5 /* XCRemoteSwiftPackageReference "Swinject" */;
-			productName = Swinject;
-		};
-		8DEC6C4A2891C4DA00D1BDD5 /* SwinjectAutoregistration */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8DEC6C492891C4DA00D1BDD5 /* XCRemoteSwiftPackageReference "SwinjectAutoregistration" */;
-			productName = SwinjectAutoregistration;
-		};
-		8DEC6C4D2891C4FC00D1BDD5 /* SwinjectStoryboard */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8DEC6C4C2891C4FC00D1BDD5 /* XCRemoteSwiftPackageReference "SwinjectStoryboard" */;
-			productName = SwinjectStoryboard;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

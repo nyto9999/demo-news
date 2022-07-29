@@ -2,8 +2,7 @@ import UIKit
 import Combine
 import Resolver
 
-
-class NewsView: UIViewController{
+class HeadlinesView: UIViewController{
   
   //properties
   @Injected private var viewModel: NewsViewModel
@@ -13,7 +12,7 @@ class NewsView: UIViewController{
   //layouts
   lazy var tableview:UITableView = {
     let tableview = UITableView(frame: view.frame)
-    tableview.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+    tableview.register(UITableViewCell.self, forCellReuseIdentifier: "cell2")
     return tableview
   }()
   var dateFormatter: DateFormatter {
@@ -34,7 +33,7 @@ class NewsView: UIViewController{
   }
   
   private func fetchingViewModel() {
-    viewModel.newsEverything()
+    viewModel.newsTopHeadlines()
       .receive(on: DispatchQueue.main)
       .sink { completion in
         switch completion {
@@ -50,13 +49,13 @@ class NewsView: UIViewController{
   }
 }
 
-extension NewsView: UITableViewDelegate, UITableViewDataSource {
+extension HeadlinesView: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return news.count
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+    let cell = tableView.dequeueReusableCell(withIdentifier: "cell2", for: indexPath)
     let content = cell.defaultContentConfiguration()
     cell.contentConfiguration = configure(content, with: indexPath)
     return cell
@@ -70,8 +69,7 @@ extension NewsView: UITableViewDelegate, UITableViewDataSource {
  
     content.text = news[indexPath.row].title
     content.secondaryText = dateString!.formatted(date: .complete, time: .shortened)
-  
-    
+   
     content.textToSecondaryTextVerticalPadding = CGFloat(40.0)
     
     return content

@@ -1,6 +1,5 @@
 import Foundation
 
-
 enum Country: String {
   case taiwan = "tw"
 }
