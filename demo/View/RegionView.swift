@@ -26,8 +26,6 @@ class RegionView: UIViewController{
     self.navigationController?.title = "News"
     tableview.delegate = self
     tableview.dataSource = self
- 
-    
   }
  
 }

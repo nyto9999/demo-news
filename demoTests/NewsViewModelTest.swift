@@ -19,35 +19,6 @@ class NewsViewModelTest: XCTestCase {
     super.tearDown()
   }
   
-  func testClientGetEverythingSuccessfully() {
-    
-    var newsResult:NewsResult?
-    var error: APIError?
-    
-    measure {
-      let expectation = self.expectation(description: "wait client get everything")
-      client.getEverything()
-        .sink (receiveCompletion: { completion in
-          switch completion {
-            case .finished:
-              break
-            case .failure(let encounteredError):
-              error = encounteredError
-          }
-          
-          expectation.fulfill()
-        }, receiveValue: { value in
-          newsResult = value
-        })
-        .store(in: &cancellable)
-        
-        waitForExpectations(timeout: 3)
-      
-      XCTAssertNil(error)
-      XCTAssertNotNil(newsResult)
-    }
-  }
-  
   func testClientTopHeadlinesSuccessfully() {
     
     var newsResult:NewsResult?
@@ -55,7 +26,7 @@ class NewsViewModelTest: XCTestCase {
     
     measure {
       let expectation = self.expectation(description: "wait client get topheadlines")
-      client.getTopheadlines()
+      client.publisherTopheadlines()
         .sink (receiveCompletion: { completion in
           switch completion {
             case .finished:
@@ -84,7 +55,7 @@ class NewsViewModelTest: XCTestCase {
     
     measure {
       let expectation = self.expectation(description: "wait client get topheadlines")
-      client.search(searchText: "ukraine")
+      client.publisherSearch(searchText: "ukraine")
         .sink (receiveCompletion: { completion in
           switch completion {
             case .finished:
@@ -99,10 +70,32 @@ class NewsViewModelTest: XCTestCase {
         })
         .store(in: &cancellable)
         
-        waitForExpectations(timeout: 3)
+        waitForExpectations(timeout: 5)
       
       XCTAssertNil(error)
       XCTAssertNotNil(newsResult)
+    }
+  }
+  
+  func testAsynHeadline() {
+    measure {
+      let expectation = self.expectation(description: "asyn topheadline")
+
+      Task.detached(priority: .medium) {
+        do {
+          let news = try await self.client.asyncTopheadlines()
+          expectation.fulfill()
+          DispatchQueue.main.async {
+            XCTAssertNotNil(news)
+          }
+        }
+        catch {
+          XCTAssertNil(error)
+        }
+        
+      }
+      
+      waitForExpectations(timeout: 5)
     }
   }
   

@@ -2,11 +2,12 @@ import Foundation
 import Combine
 
 protocol NewsViewModelProtocol {
+  //publisher way
   typealias newsPublisher = AnyPublisher<[News], APIError>
-  
-  // news topheadlines list
   func newsTopHeadlines() -> newsPublisher
-  
-  //search list
   func search(searchText: String) -> newsPublisher
+  
+  //async way
+//  func newsTopHeadlines() async throws -> [News]
+//  func search(searchText: String) async throws
 }

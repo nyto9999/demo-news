@@ -9,6 +9,6 @@ extension Resolver {
     root = Resolver.mock
     defaultScope = .application
     
-    Resolver.mock.register { MockNewsClient() }.implements(NewsClientProtocol.self)
+    Resolver.mock.register { MockNewsClient() }.implements(MockProtocol.self)
   }
 }

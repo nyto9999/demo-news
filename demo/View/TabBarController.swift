@@ -11,13 +11,13 @@ class TabBarController:UITabBarController, UITabBarControllerDelegate {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     self.viewControllers = tabItemsFactory()
-    selectedIndex = 1
+    selectedIndex = 0
   }
   
   private func tabItemsFactory() -> [UIViewController] {
     let views = [
       HeadlinesView(),
-      RegionView()
+      RegionView(),
     ]
     let icons = [
       UITabBarItem(title: "Headlines", image: UIImage(systemName: "flame.circle.fill"), tag: 0),

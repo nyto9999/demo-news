@@ -6,6 +6,18 @@
 	<dict>
 		<key>NewsViewModelTest</key>
 		<dict>
+			<key>testAsynHeadline()</key>
+			<dict>
+				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
+				<dict>
+					<key>baselineAverage</key>
+					<real>10.000000</real>
+					<key>baselineIntegrationDisplayName</key>
+					<string>Local Baseline</string>
+					<key>maxPercentRelativeStandardDeviation</key>
+					<real>100.000000</real>
+				</dict>
+			</dict>
 			<key>testClientGetEverythingSuccessfully()</key>
 			<dict>
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
@@ -23,11 +35,11 @@
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
 				<dict>
 					<key>baselineAverage</key>
-					<real>0.400000</real>
+					<real>10.000000</real>
 					<key>baselineIntegrationDisplayName</key>
 					<string>Local Baseline</string>
 					<key>maxPercentRelativeStandardDeviation</key>
-					<real>50.000000</real>
+					<real>100.000000</real>
 				</dict>
 			</dict>
 			<key>testClientTopHeadlinesSuccessfully()</key>
@@ -35,11 +47,11 @@
 				<key>com.apple.XCTPerformanceMetric_WallClockTime</key>
 				<dict>
 					<key>baselineAverage</key>
-					<real>0.400000</real>
+					<real>10.000000</real>
 					<key>baselineIntegrationDisplayName</key>
 					<string>Local Baseline</string>
 					<key>maxPercentRelativeStandardDeviation</key>
-					<real>50.000000</real>
+					<real>100.000000</real>
 				</dict>
 			</dict>
 		</dict>
