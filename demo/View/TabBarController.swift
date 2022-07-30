@@ -3,6 +3,9 @@ import UIKit
 import SwiftUI
 
 class TabBarController:UITabBarController, UITabBarControllerDelegate {
+  
+
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     delegate = self
@@ -17,11 +20,11 @@ class TabBarController:UITabBarController, UITabBarControllerDelegate {
   private func tabItemsFactory() -> [UIViewController] {
     let views = [
       HeadlinesView(),
-      RegionView(),
+      CountryListView(),
     ]
     let icons = [
       UITabBarItem(title: "Headlines", image: UIImage(systemName: "flame.circle.fill"), tag: 0),
-      UITabBarItem(title: "Region", image: UIImage(systemName: "gearshape.circle.fill"), tag: 1),
+      UITabBarItem(title: "Country", image: UIImage(systemName: "gearshape.circle.fill"), tag: 1),
     ]
     
     for (index, view) in views.enumerated() {
@@ -31,10 +34,20 @@ class TabBarController:UITabBarController, UITabBarControllerDelegate {
     return views
   }
   
+  private func getCountryList() -> [String] {
+    var array = [String]()
+    for country in Constants.isoCountryCode.allCases {
+      array.append(country.rawValue)
+    }
+    return array
+  }
+  
   func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
     print("Should select viewController: \(viewController.tabBarItem.tag) ?")
     return true
   }
+  
+
   
   
 }

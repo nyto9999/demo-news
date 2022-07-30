@@ -25,6 +25,7 @@
 		8D61AA29288C93640050BEDF /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D61AA28288C93640050BEDF /* APIClient.swift */; };
 		8D61AA2C288CA2540050BEDF /* NewsClientProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D61AA2B288CA2540050BEDF /* NewsClientProtocol.swift */; };
 		8D61AA2E288CA8730050BEDF /* NewsViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D61AA2D288CA8730050BEDF /* NewsViewModelProtocol.swift */; };
+		8DE5D7492894FAB200E6CE46 /* Veximoji in Frameworks */ = {isa = PBXBuildFile; productRef = 8DE5D7482894FAB200E6CE46 /* Veximoji */; };
 		8DEC6C43289107A200D1BDD5 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 8DEC6C42289107A200D1BDD5 /* Alamofire */; };
 		8DEC6C542891E91B00D1BDD5 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DEC6C532891E91B00D1BDD5 /* TabBarController.swift */; };
 		8DEC6C562891EEF300D1BDD5 /* HeadlinesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DEC6C552891EEF300D1BDD5 /* HeadlinesView.swift */; };
@@ -35,7 +36,7 @@
 		8DFC200828884C41007B6E7F /* NewsResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DFC1FF8288847C6007B6E7F /* NewsResult.swift */; };
 		8DFC200928884CDE007B6E7F /* News.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DFC1FFA288847DF007B6E7F /* News.swift */; };
 		8DFC200A28884CE0007B6E7F /* LoginViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D2BA69E2887489000A8FBC7 /* LoginViewViewController.swift */; };
-		8DFC200B28884CE2007B6E7F /* RegionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D1635A628873604001D7372 /* RegionView.swift */; };
+		8DFC200B28884CE2007B6E7F /* CountryListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D1635A628873604001D7372 /* CountryListView.swift */; };
 		8DFC201128884FCE007B6E7F /* NewsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DFC201028884FCE007B6E7F /* NewsViewModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -66,7 +67,7 @@
 		8D16359F28873604001D7372 /* demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D1635A228873604001D7372 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8D1635A428873604001D7372 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		8D1635A628873604001D7372 /* RegionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionView.swift; sourceTree = "<group>"; };
+		8D1635A628873604001D7372 /* CountryListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryListView.swift; sourceTree = "<group>"; };
 		8D1635AB28873605001D7372 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8D1635AE28873605001D7372 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8D1635B028873605001D7372 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -103,6 +104,7 @@
 				8DEC6C43289107A200D1BDD5 /* Alamofire in Frameworks */,
 				8D5FAE77288DB41E00F2722F /* Resolver in Frameworks */,
 				8D2BA69228873A6A00A8FBC7 /* SwiftyJSON in Frameworks */,
+				8DE5D7492894FAB200E6CE46 /* Veximoji in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,7 +241,7 @@
 			children = (
 				8D2BA69E2887489000A8FBC7 /* LoginViewViewController.swift */,
 				8DEC6C532891E91B00D1BDD5 /* TabBarController.swift */,
-				8D1635A628873604001D7372 /* RegionView.swift */,
+				8D1635A628873604001D7372 /* CountryListView.swift */,
 				8DEC6C552891EEF300D1BDD5 /* HeadlinesView.swift */,
 				8D61AA1A2889F8300050BEDF /* NewsDetail.swift */,
 			);
@@ -277,6 +279,7 @@
 				8D2BA69128873A6A00A8FBC7 /* SwiftyJSON */,
 				8D5FAE76288DB41E00F2722F /* Resolver */,
 				8DEC6C42289107A200D1BDD5 /* Alamofire */,
+				8DE5D7482894FAB200E6CE46 /* Veximoji */,
 			);
 			productName = demo;
 			productReference = 8D16359F28873604001D7372 /* demo.app */;
@@ -332,6 +335,7 @@
 				8D2BA69028873A6A00A8FBC7 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				8D5FAE75288DB41E00F2722F /* XCRemoteSwiftPackageReference "Resolver" */,
 				8DEC6C41289107A200D1BDD5 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				8DE5D7472894FAB200E6CE46 /* XCRemoteSwiftPackageReference "Veximoji" */,
 			);
 			productRefGroup = 8D1635A028873604001D7372 /* Products */;
 			projectDirPath = "";
@@ -380,7 +384,7 @@
 				8D1635A328873604001D7372 /* AppDelegate.swift in Sources */,
 				8D61AA1B2889F8300050BEDF /* NewsDetail.swift in Sources */,
 				8DEC6C6128937D3800D1BDD5 /* BGTNewsTasks.swift in Sources */,
-				8DFC200B28884CE2007B6E7F /* RegionView.swift in Sources */,
+				8DFC200B28884CE2007B6E7F /* CountryListView.swift in Sources */,
 				8DFC200A28884CE0007B6E7F /* LoginViewViewController.swift in Sources */,
 				8D1635A528873604001D7372 /* SceneDelegate.swift in Sources */,
 				8D61AA25288C8D1A0050BEDF /* Endpoint.swift in Sources */,
@@ -677,6 +681,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		8DE5D7472894FAB200E6CE46 /* XCRemoteSwiftPackageReference "Veximoji" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/roz0n/Veximoji.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		8DEC6C41289107A200D1BDD5 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire.git";
@@ -697,6 +709,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8D5FAE75288DB41E00F2722F /* XCRemoteSwiftPackageReference "Resolver" */;
 			productName = Resolver;
+		};
+		8DE5D7482894FAB200E6CE46 /* Veximoji */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8DE5D7472894FAB200E6CE46 /* XCRemoteSwiftPackageReference "Veximoji" */;
+			productName = Veximoji;
 		};
 		8DEC6C42289107A200D1BDD5 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;

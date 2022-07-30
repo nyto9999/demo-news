@@ -13,7 +13,7 @@ class HeadlinesView: UIViewController{
   //layouts
   lazy var tableview:UITableView = {
     let tableview = UITableView(frame: view.frame)
-    tableview.register(UITableViewCell.self, forCellReuseIdentifier: "cell2")
+    tableview.register(UITableViewCell.self, forCellReuseIdentifier: "headlines")
     return tableview
   }()
   
@@ -118,7 +118,7 @@ extension HeadlinesView: UITableViewDelegate, UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "cell2", for: indexPath)
+    let cell = tableView.dequeueReusableCell(withIdentifier: "headlines", for: indexPath)
     let content = cell.defaultContentConfiguration()
     cell.contentConfiguration = configure(content, with: indexPath)
     return cell

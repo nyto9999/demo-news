@@ -1,7 +1,6 @@
 import Foundation
  
 protocol Endpoint {
-  var base: String { get }
   var scheme: String { get }
   var host: String { get }
   var path: String { get }
@@ -17,22 +16,17 @@ extension Endpoint {
   }
   
   var urlComponents: URLComponents {
-    var components = URLComponents(string: base)!
+    var components = URLComponents()
     components.scheme = scheme
     components.host = host
     components.path = path
     
     
     var queryItems = [
-      URLQueryItem(name: "country", value: RegionCodeHelper.getCurrentCountryCode())
+      URLQueryItem(name: "pagesize", value: "100")
     ]
     
-    if path == "/v2/everything" {
-      queryItems.removeAll()
-    }
-    
     if let params = params, method == .get {
-      queryItems.removeAll()
       queryItems.append(contentsOf: params.map {
         URLQueryItem(name: "\($0)", value: "\($1)")
       })

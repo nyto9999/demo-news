@@ -18,8 +18,10 @@ final class NewsClient: APIClient, NewsClientProtocol {
   }
   
   public func bgDownloadNews() {
-    let request = NewsProvider.getTopheadlines.reuqest
-    return jsonDownloader(with: request, type: Constants.NewsType.everything.rawValue)
+    Task.detached(priority: .medium) {
+      let request = NewsProvider.getTopheadlines.reuqest
+      try await self.jsonDownloader(with: request, type: Constants.NewsType.everything.rawValue)
+    }
   }
   
   

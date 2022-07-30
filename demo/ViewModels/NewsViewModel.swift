@@ -5,7 +5,6 @@ import Resolver
 
 final class NewsViewModel {
   @Injected private var client: NewsClient
-  
 }
 
 extension NewsViewModel: NewsViewModelProtocol {

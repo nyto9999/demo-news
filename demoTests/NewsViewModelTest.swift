@@ -81,7 +81,7 @@ class NewsViewModelTest: XCTestCase {
     measure {
       let expectation = self.expectation(description: "asyn topheadline")
 
-      Task.detached(priority: .medium) {
+      Task.detached(priority: .background) {
         do {
           let news = try await self.client.asyncTopheadlines()
           expectation.fulfill()

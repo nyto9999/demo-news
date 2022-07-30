@@ -3,6 +3,7 @@ import Foundation
 enum NewsProvider {
   case getTopheadlines
   case search(searchText: String)
+  case searchCountry(code: String)
 }
  
 // MARK: Endpoint
@@ -16,16 +17,14 @@ extension NewsProvider: Endpoint {
     "newsapi.org"
   }
   
-  var base: String {
-    return "https/newsapi.org"
-  }
-  
   var path: String {
     switch self {
       case .getTopheadlines:
         return "/v2/top-headlines"
       case .search(searchText:):
         return "/v2/everything"
+      case .searchCountry(code:):
+        return "/v2/top-headlines"
     }
   }
   
@@ -36,15 +35,17 @@ extension NewsProvider: Endpoint {
   var params: [String : Any]? {
     switch self {
       case .getTopheadlines:
-        return nil
+        return ["country": RegionCodeHelper.getCurrentCountryCode()]
       case .search(searchText: let searchText):
         return ["q" : searchText]
+      case .searchCountry(code: let code):
+        return ["country": code]
     }
   }
  
   var method: HTTPMethod {
     switch self {
-      case .getTopheadlines,.search(searchText:):
+      case .getTopheadlines,.search(searchText:), .searchCountry(code:):
         return .get
     }
   }
