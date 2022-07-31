@@ -7,25 +7,26 @@ final class NewsClient: APIClient, NewsClientProtocol {
   @Injected internal var session: URLSession
   
   // MARK: publisher way
-  func getTopheadlines() -> AnyPublisher<NewsResult, APIError> {
+  func getTopheadlines() -> AnyPublisher<NewsResult, MyError> {
     let request = NewsProvider.getTopheadlines.reuqest
-    return fetchAndDecode(with: request, decodeType: NewsResult())
+    return fetchAndDecode(for: request, decodeType: NewsResult())
   }
   
-  func search(searchText: String) -> AnyPublisher<NewsResult, APIError> {
+  func search(searchText: String) -> AnyPublisher<NewsResult, MyError> {
     let request = NewsProvider.search(searchText: searchText).reuqest
-    return fetchAndDecode(with: request, decodeType: NewsResult())
+    return fetchAndDecode(for: request, decodeType: NewsResult())
   }
   
   func fetchAndSave() async throws {
     let request = NewsProvider.getTopheadlines.reuqest
-    try await self.fetchAndSave(with: request)
+    try await self.fetchAndSave(for: request)
   }
 }
 
-enum APIError: Error {
-   
-  case httpNoResponse(url: URL)
+enum MyError: Error {
+  case dataNil
+  case fileNil
+  case httpResponseFailed(url: URL)
   case decodingFailed(error: Swift.DecodingError)
   case networkFailed(error: URLError, url: URL)
   case unknown

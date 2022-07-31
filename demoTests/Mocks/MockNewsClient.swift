@@ -6,14 +6,14 @@ class MockNewsClient: APIClient, MockProtocol {
   
   var session: URLSession = URLSession(configuration: .default)
   
-  func publisherTopheadlines() -> AnyPublisher<NewsResult, APIError> {
+  func publisherTopheadlines() -> AnyPublisher<NewsResult, MyError> {
     let request = NewsProvider.getTopheadlines.reuqest
-    return fetchAndDecode(with: request, decodeType: NewsResult())
+    return fetchAndDecode(for: request, decodeType: NewsResult())
   }
   
-  func publisherSearch(searchText: String) -> AnyPublisher<NewsResult, APIError> {
+  func publisherSearch(searchText: String) -> AnyPublisher<NewsResult, MyError> {
     let request = NewsProvider.search(searchText: searchText).reuqest
-    return fetchAndDecode(with: request, decodeType: NewsResult())
+    return fetchAndDecode(for: request, decodeType: NewsResult())
   }
  
  
@@ -22,9 +22,9 @@ class MockNewsClient: APIClient, MockProtocol {
 
 protocol MockProtocol {
  
-  func publisherTopheadlines() -> AnyPublisher<NewsResult, APIError>
+  func publisherTopheadlines() -> AnyPublisher<NewsResult, MyError>
   
-  func publisherSearch(searchText: String) -> AnyPublisher<NewsResult, APIError>
+  func publisherSearch(searchText: String) -> AnyPublisher<NewsResult, MyError>
    
 }
 

@@ -10,17 +10,15 @@ protocol APIClient {
 extension APIClient {
   
   //MARK: publisher way
-  func fetchAndDecode<T: Decodable>(with request: URLRequest, decodeType: T) -> AnyPublisher<T, APIError> {
+  func fetchAndDecode<T: Decodable>(for request: URLRequest, decodeType: T) -> AnyPublisher<T, MyError> {
     
     return session.dataTaskPublisher(for: request)
       .tryMap { element -> Data in
-        guard let httpResponse = element.response as? HTTPURLResponse, 200..<300 ~= httpResponse.statusCode  else {
-          throw URLError(.badServerResponse)
-        }
+        guard (element.response as? HTTPURLResponse)?.statusCode == 200 else { throw URLError(.badServerResponse) }
         return element.data
       }
       .decode(type: T.self, decoder: JSONDecoder())
-      .mapError { error -> APIError in
+      .mapError { error -> MyError in
         switch error {
           case let URLError as URLError:
             return .networkFailed(error: URLError, url: request.url!)
@@ -33,14 +31,15 @@ extension APIClient {
       .eraseToAnyPublisher()
   }
   
-  func fetchAndSave(with request: URLRequest) async throws {
+  func fetchAndSave(for request: URLRequest) async throws {
     
+    //fetching
     let (data, response) = try await URLSession.shared.data(for: request, delegate: nil)
-    guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw APIError.httpNoResponse(url: request.url!) }
+    guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw URLError(.badServerResponse) }
+    
+    //saving
     let fileManager = FileManager()
-    
-    guard let file = fileManager.backupFilePath() else { return }
-    
+    guard let file = fileManager.backupFilePath() else { throw MyError.fileNil }
     if fileManager.fileExists(atPath: file.path) {
       print("exist")
       try FileManager.default.removeItem(at: file)

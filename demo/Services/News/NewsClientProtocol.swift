@@ -3,9 +3,9 @@ import Combine
 
 protocol NewsClientProtocol {
   
-  func getTopheadlines() -> AnyPublisher<NewsResult, APIError>
+  func getTopheadlines() -> AnyPublisher<NewsResult, MyError>
   
-  func search(searchText: String) -> AnyPublisher<NewsResult, APIError>
+  func search(searchText: String) -> AnyPublisher<NewsResult, MyError>
   
   func fetchAndSave() async throws
 }

@@ -22,7 +22,7 @@ class NewsViewModelTest: XCTestCase {
   func testClientTopHeadlinesSuccessfully() {
     
     var newsResult:NewsResult?
-    var error: APIError?
+    var error: MyError?
     
     measure {
       let expectation = self.expectation(description: "wait client get topheadlines")
@@ -51,7 +51,7 @@ class NewsViewModelTest: XCTestCase {
   func testClientSearchSuccessfully() {
     
     var newsResult:NewsResult?
-    var error: APIError?
+    var error: MyError?
     
     measure {
       let expectation = self.expectation(description: "wait client get topheadlines")
