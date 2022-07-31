@@ -10,7 +10,7 @@ protocol APIClient {
 extension APIClient {
   
   //MARK: publisher way
-  func fetch<T: Decodable>(with request: URLRequest, decodeType: T) -> AnyPublisher<T, APIError> {
+  func fetchAndDecode<T: Decodable>(with request: URLRequest, decodeType: T) -> AnyPublisher<T, APIError> {
     
     return session.dataTaskPublisher(for: request)
       .tryMap { element -> Data in
@@ -33,34 +33,21 @@ extension APIClient {
       .eraseToAnyPublisher()
   }
   
-  //MARK: aync way
-  func asynFetch<T: Decodable>(with request: URLRequest, decodeType: T) async throws -> T {
-    
-    let (data, response) = try await URLSession.shared.data(for: request, delegate: nil)
-    
-    guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw APIError.httpNoResponse(url: request.url!) }
-    guard let news = try? JSONDecoder()
-      .decode(T.self, from: data)
-    else { throw APIError.httpNoResponse(url: request.url!) }
-    
-    return news
-  }
-  
-  func jsonDownloader(with request: URLRequest, type: String) async throws {
+  func fetchAndSave(with request: URLRequest) async throws {
     
     let (data, response) = try await URLSession.shared.data(for: request, delegate: nil)
     guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw APIError.httpNoResponse(url: request.url!) }
+    let fileManager = FileManager()
     
-    if let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
-      
-      let pathWithFileName = documentDirectory.appendingPathComponent(type).appendingPathExtension("json")
-      
-      if FileManager.fileExists(filePath: pathWithFileName.path) {
-        print("exist")
-        try FileManager.default.removeItem(at: pathWithFileName)
-      }
-      try data.write(to: pathWithFileName, options: [.atomic])
-      print(pathWithFileName)
+    guard let file = fileManager.backupFilePath() else { return }
+    
+    if fileManager.fileExists(atPath: file.path) {
+      print("exist")
+      try FileManager.default.removeItem(at: file)
     }
+    try data.write(to: file, options: [.atomic])
+    print(file)
   }
 }
+
+

@@ -8,18 +8,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
     guard let windowScene = (scene as? UIWindowScene) else { return }
     
-//    BGTaskScheduler.shared.register(
-//      forTaskWithIdentifier: Constants.backgroundTaskIdentifier,
-//      using: nil)
-//      { (task) in
-//        
-//        task.expirationHandler = {
-//          print("failed")
-//        }
-//        let bgTasks = BGNewsTasks()
-//        bgTasks.downloadHeadlines()
-//        task.setTaskCompleted(success: true)
-//      }
+    BGTaskScheduler.shared.register(
+      forTaskWithIdentifier: Constants.backgroundTaskIdentifier,
+      using: nil)
+      { (task) in
+        print("tasking")
+        task.expirationHandler = {
+          print("failed")
+        }
+
+        print("prefetching in bg...")
+
+        Task {
+          try await NewsClient().fetchAndSave()
+        }
+        task.setTaskCompleted(success: true)
+      }
     
     window = UIWindow(frame: windowScene.coordinateSpace.bounds)
     window?.windowScene = windowScene
@@ -42,7 +46,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   }
   
   func sceneDidEnterBackground(_ scene: UIScene) {
-//    self.scheduleAppRefresh()
+    self.scheduleAppRefresh()
   }
   
   func scheduleAppRefresh() {
@@ -50,8 +54,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     let request = BGAppRefreshTaskRequest(identifier: Constants.backgroundTaskIdentifier)
     
     //dont start refreshing my app untill atleat 1 hour when I schedule it
-    request.earliestBeginDate = Date(timeIntervalSinceNow: 60 * 60)
+//    request.earliestBeginDate = Date(timeIntervalSinceNow: 60 * 60)
+    request.earliestBeginDate = Date(timeIntervalSinceNow: 5)
     do {
+      
+      print("scheduling...")
       try BGTaskScheduler.shared.submit(request)
     }
     catch {

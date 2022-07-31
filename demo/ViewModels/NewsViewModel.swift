@@ -11,7 +11,7 @@ extension NewsViewModel: NewsViewModelProtocol {
   
   //publisher way
   typealias newsPublisher = AnyPublisher<[News], APIError>
- 
+  
   func newsTopHeadlines() -> newsPublisher {
     return client.getTopheadlines().map { $0.news.sorted { $0 > $1 } }
       .eraseToAnyPublisher()
@@ -23,14 +23,18 @@ extension NewsViewModel: NewsViewModelProtocol {
       .eraseToAnyPublisher()
   }
   
-  // aysn way
-//  func newsTopHeadlines() async throws -> [News] {
-//    return try await client.getTopheadlines().news.sorted(by: {$0 < $1})
-//  }
-//  func search(searchText: String) async throws {
-//    try await client.search(searchText: searchText).news.sorted(by: { $0 < $1 })
-//  }
- 
+  func loadBackupNews() async throws -> [News] {
+    try await client.fetchAndSave()
+    
+    return try self.decodeBackupData()
+  }
+  
+  private func decodeBackupData() throws -> [News] {
+    let data = try? Data(contentsOf: URL(fileURLWithPath: FileManager().backupFilePath()!.path))
+    guard let data = data else { throw APIError.unknown }
+    let newsResult = try JSONDecoder().decode(NewsResult.self, from: data)
+    return newsResult.news
+  }
 }
 
 

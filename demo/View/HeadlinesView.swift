@@ -1,13 +1,13 @@
 import UIKit
 import Combine
 import Resolver
-
-
+ 
 class HeadlinesView: UIViewController{
   
   //properties
   @Injected private var viewModel: NewsViewModel
   var news = [News]()
+  let manager = FileManager()
   var subscriptions = Set<AnyCancellable>()
   
   //layouts
@@ -20,7 +20,6 @@ class HeadlinesView: UIViewController{
   var spinner: UIActivityIndicatorView = {
     let spinner = UIActivityIndicatorView(style: .large)
     spinner.translatesAutoresizingMaskIntoConstraints = false
-    
     return spinner
   }()
   
@@ -37,11 +36,23 @@ class HeadlinesView: UIViewController{
     setupConstraints()
     spinner.startAnimating()
     
-   fetchingViewModel()
+    
+    manager.fileExists(atPath: manager.backupFilePath()!.path) ?
+    loadBackupNews() :
+    fetchingNews()
     
   }
   
-  private func fetchingViewModel() {
+  private func loadBackupNews() {
+    print("loading local news.....")
+    Task(priority: .medium) {
+      self.news = try await viewModel.loadBackupNews()
+      self.tableview.reloadData()
+    }
+  }
+  
+  private func fetchingNews() {
+    print("fetching network news.....")
     viewModel.newsTopHeadlines()
       .receive(on: DispatchQueue.main)
       .sink { completion in
@@ -57,30 +68,7 @@ class HeadlinesView: UIViewController{
       }
       .store(in: &subscriptions)
   }
-  
-  //async way
-//  private func asyncNews() {
-//
-//    Task.detached(priority: .medium) {
-//      do {
-//        let news = try await self.viewModel.newsTopHeadlines()
-//
-//        DispatchQueue.main.async {
-//          self.news = news
-//          self.spinner.stopAnimating()
-//          self.tableview.reloadData()
-//        }
-//      }
-//      catch let error as APIError{
-//        DispatchQueue.main.async {
-//          print(error)
-//          self.tableview.isHidden = true
-//          self.spinner.startAnimating()
-//        }
-//      }
-//    }
-//  }
-  
+
   private func setupViews() {
     view = tableview
     view.addSubview(spinner)
@@ -93,23 +81,6 @@ class HeadlinesView: UIViewController{
     spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
   }
-  
-  
-//  private func fetchingViewModel() {
-//    viewModel.newsTopHeadlines()
-//      .receive(on: DispatchQueue.main)
-//      .sink { completion in
-//        switch completion {
-//          case .finished:
-//            self.tableview.reloadData()
-//          case .failure:
-//            self.tableview.isHidden = true
-//        }
-//      } receiveValue: { news in
-//        self.news = news
-//      }
-//      .store(in: &subscriptions)
-//  }
 }
 
 extension HeadlinesView: UITableViewDelegate, UITableViewDataSource {
