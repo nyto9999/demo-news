@@ -2,7 +2,7 @@ import UIKit
 import Combine
 import Resolver
  
-class HeadlinesView: UIViewController{
+class NewsView: UIViewController{
   
   //properties
   @Injected private var viewModel: NewsViewModel
@@ -13,7 +13,8 @@ class HeadlinesView: UIViewController{
   //layouts
   lazy var tableview:UITableView = {
     let tableview = UITableView(frame: view.frame)
-    tableview.register(UITableViewCell.self, forCellReuseIdentifier: "headlines")
+    tableview.register(NewsCellView.self, forCellReuseIdentifier: NewsCellView.id)
+    tableview.translatesAutoresizingMaskIntoConstraints = false
     return tableview
   }()
   
@@ -43,14 +44,17 @@ class HeadlinesView: UIViewController{
     
   }
   
+  //loading from local
   private func loadBackupNews() {
     print("loading local news.....")
     Task(priority: .medium) {
       self.news = try await viewModel.loadBackupNews()
       self.tableview.reloadData()
+      self.spinner.stopAnimating()
     }
   }
   
+  //fetching from network
   private func fetchingNews() {
     print("fetching network news.....")
     viewModel.newsTopHeadlines()
@@ -70,7 +74,7 @@ class HeadlinesView: UIViewController{
   }
 
   private func setupViews() {
-    view = tableview
+    view.addSubview(tableview)
     view.addSubview(spinner)
     
     tableview.delegate = self
@@ -78,35 +82,25 @@ class HeadlinesView: UIViewController{
   }
   
   private func setupConstraints() {
+    tableview.frame = view.bounds
     spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
   }
 }
 
-extension HeadlinesView: UITableViewDelegate, UITableViewDataSource {
+extension NewsView: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return news.count
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "headlines", for: indexPath)
-    let content = cell.defaultContentConfiguration()
-    cell.contentConfiguration = configure(content, with: indexPath)
+    let item = news[indexPath.row]
+    let cell = tableView.dequeueReusableCell(withIdentifier: NewsCellView.id, for: indexPath) as! NewsCellView
+    let dateString = dateFormatter.date(from: item.publishedAt)
+    let date = dateString!.formatted(date: .complete, time: .shortened)
+    
+    cell.configure(text: item.title, author: "Author: \(item.author ?? "")", date: date)
     return cell
-  }
-  
-  private func configure(_ content: UIListContentConfiguration, with indexPath: IndexPath) -> UIListContentConfiguration {
-    
-    var content = content
-    let publishedAt = news[indexPath.row].publishedAt
-    let dateString = dateFormatter.date(from: publishedAt)
- 
-    content.text = news[indexPath.row].title
-    content.secondaryText = dateString!.formatted(date: .complete, time: .shortened)
-   
-    content.textToSecondaryTextVerticalPadding = CGFloat(40.0)
-    
-    return content
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

@@ -4,8 +4,10 @@ import UIKit
 struct News: Codable, Comparable, Equatable {
   
   var title:String
+  var author: String?
   var publishedAt: String
   var url:String
+  
   
   
   enum NewsDetail: CodingKey {

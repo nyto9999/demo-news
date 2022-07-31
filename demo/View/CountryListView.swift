@@ -64,7 +64,7 @@ extension CountryListView: UITableViewDelegate, UITableViewDataSource {
     let name = countries[indexPath.row].name
 //    self.dismiss(animated: true)
     
-    let vc = HeadlinesView()
+    let vc = NewsView()
     self.navigationController?.pushViewController(vc, animated: true)
   }
 }

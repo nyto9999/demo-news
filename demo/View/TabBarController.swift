@@ -19,7 +19,7 @@ class TabBarController:UITabBarController, UITabBarControllerDelegate {
   
   private func tabItemsFactory() -> [UIViewController] {
     let views = [
-      HeadlinesView(),
+      NewsView(),
       CountryListView(),
     ]
     let icons = [
