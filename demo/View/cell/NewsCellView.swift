@@ -12,17 +12,25 @@ class NewsCellView: UITableViewCell {
     return label
   }()
   
+  private var _authorLabel: UILabel = {
+    let label = UILabel()
+    label.translatesAutoresizingMaskIntoConstraints = false
+    return label
+  }()
+  
+  private var _imageView: UIImageView = {
+    let image = UIImageView()
+    image.translatesAutoresizingMaskIntoConstraints = false
+    return image
+  }()
+  
   private var _dateLabel: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
   }()
   
-  private var _authorLabel: UILabel = {
-    let label = UILabel()
-    label.translatesAutoresizingMaskIntoConstraints = false
-    return label
-  }()
+  
   
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -32,6 +40,7 @@ class NewsCellView: UITableViewCell {
   private func setupViews() {
     contentView.addSubview(_titleLabel)
     contentView.addSubview(_authorLabel)
+    contentView.addSubview(_imageView)
     contentView.addSubview(_dateLabel)
   }
   
@@ -49,25 +58,38 @@ class NewsCellView: UITableViewCell {
     _authorLabel.leadingAnchor.constraint(equalTo: marginGuide.leadingAnchor).isActive = true
     _authorLabel.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor).isActive = true
     
+    //imageview
+    _imageView.topAnchor.constraint(equalTo: _authorLabel.bottomAnchor).isActive = true
+    _imageView.leadingAnchor.constraint(equalTo: marginGuide.leadingAnchor).isActive = true
+    _imageView.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor).isActive = true
     
     //date
-    _dateLabel.topAnchor.constraint(equalTo: _authorLabel.bottomAnchor).isActive = true
+    _dateLabel.topAnchor.constraint(equalTo: _imageView.bottomAnchor).isActive = true
     _dateLabel.leadingAnchor.constraint(equalTo: marginGuide.leadingAnchor).isActive = true
     _dateLabel.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor).isActive = true
     _dateLabel.bottomAnchor.constraint(equalTo: marginGuide.bottomAnchor).isActive = true
   }
    
-  func configure(text: String, author: String, date: String) {
+  func configure(text: String, author: String, data: Data, date: String) {
     _titleLabel.text   = text
     _authorLabel.text  = author
-    _dateLabel.text    = date
     
+    
+       
+    if let compressedData = UIImage(data: data)?.jpeg(.lowest)
+    {
+      _imageView.image = UIImage(data: compressedData)
+      print("compressedData \(compressedData.count), originData \(data)")
+    }
+    
+    _dateLabel.text    = date
   }
   
   override func prepareForReuse() {
     _titleLabel.text  = nil
     _authorLabel.text = nil
     _dateLabel.text   = nil
+    _imageView.image   = UIImage(systemName: "circle")
   }
   
   required init?(coder: NSCoder) {

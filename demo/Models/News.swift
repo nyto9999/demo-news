@@ -7,8 +7,7 @@ struct News: Codable, Comparable, Equatable {
   var author: String?
   var publishedAt: String
   var url:String
-  
-  
+  var urlToImage: String?
   
   enum NewsDetail: CodingKey {
     case title
