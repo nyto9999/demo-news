@@ -13,11 +13,11 @@ class TabBarController:UITabBarController, UITabBarControllerDelegate {
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    self.viewControllers = tabItemsFactory()
+    self.viewControllers = _tabItemsFactory()
     selectedIndex = 0
   }
   
-  private func tabItemsFactory() -> [UIViewController] {
+  private func _tabItemsFactory() -> [UIViewController] {
     let views = [
       NewsView(),
       CountryListView(),
@@ -34,13 +34,13 @@ class TabBarController:UITabBarController, UITabBarControllerDelegate {
     return views
   }
   
-  private func getCountryList() -> [String] {
-    var array = [String]()
-    for country in Constants.isoCountryCode.allCases {
-      array.append(country.rawValue)
-    }
-    return array
-  }
+//  private func _getCountryList() -> [String] {
+//    var array = [String]()
+//    for country in Constants.isoCountryCode.allCases {
+//      array.append(country.rawValue)
+//    }
+//    return array
+//  }
   
   func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
     print("Should select viewController: \(viewController.tabBarItem.tag) ?")

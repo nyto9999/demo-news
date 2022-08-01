@@ -20,7 +20,7 @@
 		8D5FAE94288DC39A00F2722F /* NewsViewModelTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D5FAE84288DC04C00F2722F /* NewsViewModelTest.swift */; };
 		8D61AA1B2889F8300050BEDF /* NewsDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D61AA1A2889F8300050BEDF /* NewsDetail.swift */; };
 		8D61AA20288C7A2E0050BEDF /* NewsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D61AA1F288C7A2E0050BEDF /* NewsProvider.swift */; };
-		8D61AA23288C801B0050BEDF /* URLRequest+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D61AA22288C801B0050BEDF /* URLRequest+.swift */; };
+		8D61AA23288C801B0050BEDF /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D61AA22288C801B0050BEDF /* Extensions.swift */; };
 		8D61AA25288C8D1A0050BEDF /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D61AA24288C8D1A0050BEDF /* Endpoint.swift */; };
 		8D61AA27288C8D420050BEDF /* RegionCodeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D61AA26288C8D420050BEDF /* RegionCodeHelper.swift */; };
 		8D61AA29288C93640050BEDF /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D61AA28288C93640050BEDF /* APIClient.swift */; };
@@ -31,7 +31,6 @@
 		8DEC6C542891E91B00D1BDD5 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DEC6C532891E91B00D1BDD5 /* TabBarController.swift */; };
 		8DEC6C562891EEF300D1BDD5 /* NewsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DEC6C552891EEF300D1BDD5 /* NewsView.swift */; };
 		8DEC6C5A28935F0800D1BDD5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DEC6C5928935F0800D1BDD5 /* Constants.swift */; };
-		8DEC6C5E289376D700D1BDD5 /* FileManager+.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DEC6C5D289376D700D1BDD5 /* FileManager+.swift */; };
 		8DFC200328884A38007B6E7F /* NewsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DFC1FF628875171007B6E7F /* NewsClient.swift */; };
 		8DFC200828884C41007B6E7F /* NewsResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DFC1FF8288847C6007B6E7F /* NewsResult.swift */; };
 		8DFC200928884CDE007B6E7F /* News.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DFC1FFA288847DF007B6E7F /* News.swift */; };
@@ -80,7 +79,7 @@
 		8D5FAE8A288DC38400F2722F /* demoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = demoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D61AA1A2889F8300050BEDF /* NewsDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsDetail.swift; sourceTree = "<group>"; };
 		8D61AA1F288C7A2E0050BEDF /* NewsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsProvider.swift; sourceTree = "<group>"; };
-		8D61AA22288C801B0050BEDF /* URLRequest+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLRequest+.swift"; sourceTree = "<group>"; };
+		8D61AA22288C801B0050BEDF /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		8D61AA24288C8D1A0050BEDF /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		8D61AA26288C8D420050BEDF /* RegionCodeHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionCodeHelper.swift; sourceTree = "<group>"; };
 		8D61AA28288C93640050BEDF /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
@@ -89,7 +88,6 @@
 		8DEC6C532891E91B00D1BDD5 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		8DEC6C552891EEF300D1BDD5 /* NewsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsView.swift; sourceTree = "<group>"; };
 		8DEC6C5928935F0800D1BDD5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		8DEC6C5D289376D700D1BDD5 /* FileManager+.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+.swift"; sourceTree = "<group>"; };
 		8DFC1FF628875171007B6E7F /* NewsClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsClient.swift; sourceTree = "<group>"; };
 		8DFC1FF8288847C6007B6E7F /* NewsResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsResult.swift; sourceTree = "<group>"; };
 		8DFC1FFA288847DF007B6E7F /* News.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = News.swift; sourceTree = "<group>"; };
@@ -199,10 +197,9 @@
 		8D61AA21288C80090050BEDF /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				8D61AA22288C801B0050BEDF /* URLRequest+.swift */,
+				8D61AA22288C801B0050BEDF /* Extensions.swift */,
 				8D61AA26288C8D420050BEDF /* RegionCodeHelper.swift */,
 				8DEC6C5928935F0800D1BDD5 /* Constants.swift */,
-				8DEC6C5D289376D700D1BDD5 /* FileManager+.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -373,13 +370,12 @@
 			files = (
 				8DFC200928884CDE007B6E7F /* News.swift in Sources */,
 				8DEC6C5A28935F0800D1BDD5 /* Constants.swift in Sources */,
-				8DEC6C5E289376D700D1BDD5 /* FileManager+.swift in Sources */,
 				8D5FAE83288DBE7800F2722F /* MockNewsClient.swift in Sources */,
 				8D61AA2C288CA2540050BEDF /* NewsClientProtocol.swift in Sources */,
 				8D61AA20288C7A2E0050BEDF /* NewsProvider.swift in Sources */,
 				8DFC200828884C41007B6E7F /* NewsResult.swift in Sources */,
 				8D61AA29288C93640050BEDF /* APIClient.swift in Sources */,
-				8D61AA23288C801B0050BEDF /* URLRequest+.swift in Sources */,
+				8D61AA23288C801B0050BEDF /* Extensions.swift in Sources */,
 				8DEC6C562891EEF300D1BDD5 /* NewsView.swift in Sources */,
 				8D5522C828969B98009D1637 /* NewsCellView.swift in Sources */,
 				8D1635A328873604001D7372 /* AppDelegate.swift in Sources */,

@@ -24,7 +24,7 @@ class NewsDetail: UIViewController {
   }()
   
   //constraints
-  private func setupConstraint() {
+  private func _setupConstraint() {
     spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
   }
@@ -34,7 +34,7 @@ class NewsDetail: UIViewController {
     webview.navigationDelegate = self
     view = webview
     view.addSubview(spinner)
-    setupConstraint()
+    _setupConstraint()
   }
 }
 

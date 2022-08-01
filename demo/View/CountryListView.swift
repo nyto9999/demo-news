@@ -46,11 +46,11 @@ extension CountryListView: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "countryList", for: indexPath)
     let content = cell.defaultContentConfiguration()
-    cell.contentConfiguration = configure(content, with: indexPath)
+    cell.contentConfiguration = _configure(content, with: indexPath)
     return cell
   }
   
-  private func configure(_ content: UIListContentConfiguration, with indexPath: IndexPath) -> UIListContentConfiguration {
+  private func _configure(_ content: UIListContentConfiguration, with indexPath: IndexPath) -> UIListContentConfiguration {
     
     var content = content
  

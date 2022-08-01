@@ -35,23 +35,25 @@ class NewsView: UIViewController{
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    setupViews()
-    setupConstraints()
+    _setupViews()
+    _setupConstraints()
     spinner.startAnimating()
-    
     
 //    manager.fileExists(atPath: manager.backupFilePath()!.path) ?
 //    loadBackupNews() :
-    Task(priority: .medium) {
-      try await self.fetchingNews()
+    
+    Task.detached(priority: .medium) {
+      try await self._fetchingNews()
     }
   }
   
-  func downloadAllImages(news: [News]) async throws {
-    
+  private func _downloadAllImages(for: [News]) async throws {
     var dict = [Int:Data]()
     
+    //async
     try await withThrowingTaskGroup(of: (Int, Data).self) { [unowned self] group in
+      
+      //concurrent
       for index in 0..<news.count {
         group.addTask {
           let data = try await self.downloadImage(url: self.news[index].urlToImage ?? "")
@@ -59,14 +61,14 @@ class NewsView: UIViewController{
         }
       }
       
+      //async wait for concurrent
       for try await imageData in group {
         dict[imageData.0] = imageData.1
       }
     }
-    
+    self.imageDict = dict
     DispatchQueue.main.async {
       self.tableview.reloadData()
-      self.imageDict = dict
     }
   }
   
@@ -87,10 +89,10 @@ class NewsView: UIViewController{
 //  }
   
   //fetching from network
-  private func fetchingNews() async throws{
+  private func _fetchingNews() async throws{
     print("fetching network news.....")
     
-    let images: [News] = try await withCheckedThrowingContinuation { [weak self] continuation in
+    let imageData: [News] = try await withCheckedThrowingContinuation { [weak self] continuation in
       guard let self = self else { return }
       viewModel.newsTopHeadlines()
         .receive(on: DispatchQueue.main)
@@ -109,10 +111,10 @@ class NewsView: UIViewController{
         }
         .store(in: &subscriptions)
     }
-    try await self.downloadAllImages(news: images)
+    try await self._downloadAllImages(for: imageData)
   }
 
-  private func setupViews() {
+  private func _setupViews() {
     view.addSubview(tableview)
     view.addSubview(spinner)
     
@@ -120,7 +122,7 @@ class NewsView: UIViewController{
     tableview.dataSource = self
   }
   
-  private func setupConstraints() {
+  private func _setupConstraints() {
     tableview.frame = view.bounds
     spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
@@ -138,7 +140,7 @@ extension NewsView: UITableViewDelegate, UITableViewDataSource {
     let dateString = dateFormatter.date(from: item.publishedAt)
     let date = dateString!.formatted(date: .complete, time: .shortened)
     
-    cell.configure(text: item.title, author: "Author: \(item.author ?? "")", data: imageDict[indexPath.row] ?? Data(), date: date)
+    cell.configure(text: item.title, author: (item.author != nil) ? "來源：\(item.author!)" : "", data: imageDict[indexPath.row] ?? Data(), date: date)
     return cell
   }
   

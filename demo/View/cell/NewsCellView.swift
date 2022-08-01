@@ -34,10 +34,10 @@ class NewsCellView: UITableViewCell {
   
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
-    setupViews()
-    setupConstraints()
+    _setupViews()
+    _setupConstraints()
   }
-  private func setupViews() {
+  private func _setupViews() {
     contentView.addSubview(_titleLabel)
     contentView.addSubview(_authorLabel)
     contentView.addSubview(_imageView)
@@ -45,7 +45,7 @@ class NewsCellView: UITableViewCell {
   }
   
   
-  private func setupConstraints() {
+  private func _setupConstraints() {
     let marginGuide = contentView.layoutMarginsGuide
     
     //title
@@ -69,20 +69,35 @@ class NewsCellView: UITableViewCell {
     _dateLabel.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor).isActive = true
     _dateLabel.bottomAnchor.constraint(equalTo: marginGuide.bottomAnchor).isActive = true
   }
-   
+  
   func configure(text: String, author: String, data: Data, date: String) {
     _titleLabel.text   = text
     _authorLabel.text  = author
     
     
-       
-    if let compressedData = UIImage(data: data)?.jpeg(.lowest)
+    
+    
+    if let compressedData = UIImage(data: data)?.jpeg(.lowest),
+       let compressedImg  = UIImage(data: compressedData)
     {
-      _imageView.image = UIImage(data: compressedData)
-      print("compressedData \(compressedData.count), originData \(data)")
+      
+      _imageView.image = _resizeImage(image: compressedImg, width: 320)
+//      print("compressedData \(compressedData.count), originData \(data)")
+      
     }
     
+    
     _dateLabel.text    = date
+  }
+  
+  private func _resizeImage(image: UIImage, width: CGFloat) -> UIImage {
+    let size = CGSize(width: width, height:
+                        image.size.height * width / image.size.width)
+    let renderer = UIGraphicsImageRenderer(size: size)
+    let newImage = renderer.image { (context) in
+      image.draw(in: renderer.format.bounds)
+    }
+    return newImage
   }
   
   override func prepareForReuse() {
