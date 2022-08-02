@@ -32,11 +32,42 @@ class NewsView: UIViewController{
     df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssxxxxx"
     return df
   }
+   
+  var titleViewButtons: [UIButton] = {
+    var buttons = [UIButton]()
+    let categories = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
+    for (i,c) in categories.enumerated() {
+      let btn = UIButton()
+      btn.setTitle(c, for: .normal)
+      btn.backgroundColor = .systemOrange
+      buttons.append(btn)
+    }
+    return buttons
+  }()
+  
+  lazy var titleView: UIScrollView = {
+    //scrollview
+    let scrollview = UIScrollView(frame: (self.navigationController?.navigationBar.frame)!)
+    scrollview.isScrollEnabled = true
+    scrollview.translatesAutoresizingMaskIntoConstraints = false
+    
+    //hstack
+    let hstack = UIStackView(frame: scrollview.frame)
+    //hstack's button
+    titleViewButtons.forEach { hstack.addArrangedSubview($0) }
+    scrollview.addSubview(hstack)
+    hstack.translatesAutoresizingMaskIntoConstraints = false
+    hstack.heightAnchor.constraint(equalTo: scrollview.heightAnchor).isActive = true
+    hstack.axis = .horizontal
+    hstack.alignment = .fill
+    hstack.distribution = .equalSpacing
+    hstack.spacing = 5
+    return scrollview
+  }()
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    self.navigationController?.topViewController?.navigationItem.title = "頭條新聞"
-    self.navigationController?.topViewController?.navigationItem.titleView = nil
+    self.navigationController?.topViewController?.navigationItem.titleView = titleView
   }
   
   override func viewDidLoad() {
@@ -88,7 +119,7 @@ class NewsView: UIViewController{
       //concurrent
       for index in 0..<news.count {
         group.addTask {
-          let imgData = try await self.downloadImage(url: news[index].urlToImage)
+          let imgData = try await self.downloadImage(urlString: news[index].urlToImage)
           return (index, imgData)
         }
       }
@@ -106,9 +137,13 @@ class NewsView: UIViewController{
     }
   }
   
-  func downloadImage(url: String?) async throws -> Data? {
-    return (url != nil) ?
-    try await URLSession.shared.data(from: URL(string: url!)!).0 : Data()
+  func downloadImage(urlString: String?) async throws -> Data? {
+    
+    guard let urlString = urlString,
+          let url = URL(string: urlString)
+    else { return Data() }
+    
+    return try await URLSession.shared.data(from: url).0
   }
    
   //loading from local

@@ -47,7 +47,7 @@ class SearchView: UIViewController{
     _setupViews()
     _setupConstraints()
   }
-  
+   
   override func viewDidLoad() {
     super.viewDidLoad()
     
