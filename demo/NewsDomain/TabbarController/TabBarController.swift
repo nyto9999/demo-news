@@ -3,16 +3,17 @@ import UIKit
 import SwiftUI
 
 class TabBarController:UITabBarController, UITabBarControllerDelegate {
-  
 
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    let backButton = UIBarButtonItem(title: "", style: .plain, target: self.navigationController, action: nil)
+    self.navigationItem.leftBarButtonItem = backButton
+    self.navigationController?.hidesBarsOnSwipe = true
+  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
     delegate = self
-  }
-  
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
     self.viewControllers = _tabItemsFactory()
     selectedIndex = 0
   }
@@ -21,6 +22,7 @@ class TabBarController:UITabBarController, UITabBarControllerDelegate {
     let views = [
       NewsView(),
       CountryListView(),
+      
     ]
     let icons = [
       UITabBarItem(title: "Headlines", image: UIImage(systemName: "flame.circle.fill"), tag: 0),
@@ -46,8 +48,4 @@ class TabBarController:UITabBarController, UITabBarControllerDelegate {
     print("Should select viewController: \(viewController.tabBarItem.tag) ?")
     return true
   }
-  
-
-  
-  
 }

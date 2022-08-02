@@ -30,13 +30,12 @@ class NewsCellView: UITableViewCell {
     return label
   }()
   
-  
-  
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     _setupViews()
     _setupConstraints()
   }
+  
   private func _setupViews() {
     contentView.addSubview(_titleLabel)
     contentView.addSubview(_authorLabel)
@@ -44,20 +43,33 @@ class NewsCellView: UITableViewCell {
     contentView.addSubview(_dateLabel)
   }
   
-  
   private func _setupConstraints() {
     let marginGuide = contentView.layoutMarginsGuide
     
-    //title
+//    let viewDicts = [
+//      "title" : _titleLabel,
+//      "author": _authorLabel,
+//      "image" : _imageView,
+//      "date"  : _dateLabel
+//    ]
+//
+//    contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[title]-[author]-[image]-[date]-|", options: [], metrics: nil, views: viewDicts))
+//    contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(10)-[title]-(10)-|", options: [], metrics: nil, views: viewDicts))
+//    contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(10)-[author]-(10)-|", options: [], metrics: nil, views: viewDicts))
+//    contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(10)-[image]-(10)-|", options: [], metrics: nil, views: viewDicts))
+//    contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(10)-[date]-(10)-|", options: [], metrics: nil, views: viewDicts))
+    
+    
+//    title
     _titleLabel.topAnchor.constraint(equalTo: marginGuide.topAnchor).isActive = true
     _titleLabel.leadingAnchor.constraint(equalTo: marginGuide.leadingAnchor).isActive = true
     _titleLabel.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor).isActive = true
-    
+
     //author
     _authorLabel.topAnchor.constraint(equalTo: _titleLabel.bottomAnchor).isActive = true
     _authorLabel.leadingAnchor.constraint(equalTo: marginGuide.leadingAnchor).isActive = true
     _authorLabel.trailingAnchor.constraint(equalTo: marginGuide.trailingAnchor).isActive = true
-    
+
     //imageview
     _imageView.topAnchor.constraint(equalTo: _authorLabel.bottomAnchor).isActive = true
     _imageView.leadingAnchor.constraint(equalTo: marginGuide.leadingAnchor).isActive = true
@@ -74,18 +86,14 @@ class NewsCellView: UITableViewCell {
     _titleLabel.text   = text
     _authorLabel.text  = author
     
-    
-    
-    
     if let compressedData = UIImage(data: data)?.jpeg(.lowest),
        let compressedImg  = UIImage(data: compressedData)
     {
-      
+
       _imageView.image = _resizeImage(image: compressedImg, width: 320)
 //      print("compressedData \(compressedData.count), originData \(data)")
-      
+
     }
-    
     
     _dateLabel.text    = date
   }
@@ -104,7 +112,7 @@ class NewsCellView: UITableViewCell {
     _titleLabel.text  = nil
     _authorLabel.text = nil
     _dateLabel.text   = nil
-    _imageView.image   = UIImage(systemName: "circle")
+    _imageView.image  = nil
   }
   
   required init?(coder: NSCoder) {

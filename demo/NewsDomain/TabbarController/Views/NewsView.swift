@@ -33,6 +33,11 @@ class NewsView: UIViewController{
     return df
   }
   
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    self.parent?.title = "頭條新聞"
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     _setupViews()
@@ -47,37 +52,64 @@ class NewsView: UIViewController{
     }
   }
   
-  private func _downloadAllImages(for: [News]) async throws {
+  //fetching from network
+  private func _fetchingNews() async throws {
+    print("fetching network news.....")
+    let imageData = await newsPublisher()
+    try await self._downloadAllImages(for: imageData)
+  }
+  
+  private func newsPublisher() async -> [News] {
+    return await withCheckedContinuation { continuation in
+      viewModel.newsTopHeadlines()
+        .receive(on: DispatchQueue.main)
+        .sink {completion in
+          switch completion {
+            case .finished:
+              self.tableview.reloadData()
+            case .failure:
+              self.tableview.isHidden = true
+          }
+        } receiveValue: { value in
+          continuation.resume(returning: value)
+          self.spinner.stopAnimating()
+        }
+        .store(in: &subscriptions)
+    }
+  }
+  
+  private func _downloadAllImages(for news: [News]) async throws {
     var dict = [Int:Data]()
+    let taskResult = (index: Int, image: Data?).self
     
     //async
-    try await withThrowingTaskGroup(of: (Int, Data).self) { [unowned self] group in
-      
+    try await withThrowingTaskGroup(of: taskResult) { [unowned self] group in
       //concurrent
       for index in 0..<news.count {
         group.addTask {
-          let data = try await self.downloadImage(url: self.news[index].urlToImage ?? "")
-          return (index, data)
+          let imgData = try await self.downloadImage(url: news[index].urlToImage)
+          return (index, imgData)
         }
       }
       
       //async wait for concurrent
-      for try await imageData in group {
-        dict[imageData.0] = imageData.1
+      for try await newsArray in group {
+        dict[newsArray.index] = newsArray.image
       }
     }
+    
     self.imageDict = dict
+    self.news = news
     DispatchQueue.main.async {
       self.tableview.reloadData()
     }
   }
   
-  func downloadImage(url: String) async throws -> Data {
-    return try await URLSession.shared.data(from: URL(string: url)!).0
+  func downloadImage(url: String?) async throws -> Data? {
+    return (url != nil) ?
+    try await URLSession.shared.data(from: URL(string: url!)!).0 : Data()
   }
-  
-  
-  
+   
   //loading from local
 //  private func loadBackupNews() {
 //    print("loading local news.....")
@@ -87,33 +119,7 @@ class NewsView: UIViewController{
 //      self.spinner.stopAnimating()
 //    }
 //  }
-  
-  //fetching from network
-  private func _fetchingNews() async throws{
-    print("fetching network news.....")
-    
-    let imageData: [News] = try await withCheckedThrowingContinuation { [weak self] continuation in
-      guard let self = self else { return }
-      viewModel.newsTopHeadlines()
-        .receive(on: DispatchQueue.main)
-        .sink {completion in
-          switch completion {
-            case .finished:
-              
-              self.tableview.reloadData()
-            case .failure:
-              self.tableview.isHidden = true
-          }
-        } receiveValue: { value in
-          continuation.resume(returning: value)
-          self.news = value
-          self.spinner.stopAnimating()
-        }
-        .store(in: &subscriptions)
-    }
-    try await self._downloadAllImages(for: imageData)
-  }
-
+   
   private func _setupViews() {
     view.addSubview(tableview)
     view.addSubview(spinner)
@@ -151,4 +157,3 @@ extension NewsView: UITableViewDelegate, UITableViewDataSource {
     self.navigationController?.pushViewController(vc, animated: true)
   }
 }
-

@@ -30,9 +30,14 @@ class CountryListView: UIViewController{
   override func viewDidLoad() {
     super.viewDidLoad()
     view.addSubview(tableview)
-    self.navigationController?.title = "News"
+    
     tableview.delegate = self
     tableview.dataSource = self
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    self.parent?.title = "國家"
     
   }
  
