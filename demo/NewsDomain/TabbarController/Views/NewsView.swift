@@ -35,7 +35,8 @@ class NewsView: UIViewController{
   
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    self.parent?.title = "頭條新聞"
+    self.navigationController?.topViewController?.navigationItem.title = "頭條新聞"
+    self.navigationController?.topViewController?.navigationItem.titleView = nil
   }
   
   override func viewDidLoad() {

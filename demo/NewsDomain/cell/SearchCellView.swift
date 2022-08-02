@@ -1,8 +1,8 @@
 import Foundation
 import UIKit
 
-class NewsCellView: UITableViewCell {
-  static let id = "searchcell"
+class SearchCellView: UITableViewCell {
+  static let id = "newscell"
   
   private var _titleLabel: UILabel = {
     let label = UILabel()

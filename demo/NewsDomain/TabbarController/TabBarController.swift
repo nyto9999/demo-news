@@ -1,32 +1,40 @@
 import Foundation
 import UIKit
-import SwiftUI
 
 class TabBarController:UITabBarController, UITabBarControllerDelegate {
-
+  
+  
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+    _setupViews()
+  }
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    
+  }
+  
+  private func _setupViews() {
+    delegate = self
+    self.viewControllers = _tabItemsFactory()
+    selectedIndex = 1
     let backButton = UIBarButtonItem(title: "", style: .plain, target: self.navigationController, action: nil)
     self.navigationItem.leftBarButtonItem = backButton
     self.navigationController?.hidesBarsOnSwipe = true
   }
   
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    delegate = self
-    self.viewControllers = _tabItemsFactory()
-    selectedIndex = 0
-  }
-  
   private func _tabItemsFactory() -> [UIViewController] {
+    
     let views = [
+      SearchView(),
       NewsView(),
-      CountryListView(),
-      
+      CountryListView()
     ]
+    
     let icons = [
-      UITabBarItem(title: "Headlines", image: UIImage(systemName: "flame.circle.fill"), tag: 0),
-      UITabBarItem(title: "Country", image: UIImage(systemName: "gearshape.circle.fill"), tag: 1),
+      UITabBarItem(title: "Search", image: UIImage(systemName: "magnifyingglass.circle.fill"), tag: 0),
+      UITabBarItem(title: "Headlines", image: UIImage(systemName: "flame.circle.fill"), tag: 1),
+      UITabBarItem(title: "Country", image: UIImage(systemName: "gearshape.circle.fill"), tag: 2),
+      
     ]
     
     for (index, view) in views.enumerated() {
@@ -34,18 +42,5 @@ class TabBarController:UITabBarController, UITabBarControllerDelegate {
     }
     
     return views
-  }
-  
-//  private func _getCountryList() -> [String] {
-//    var array = [String]()
-//    for country in Constants.isoCountryCode.allCases {
-//      array.append(country.rawValue)
-//    }
-//    return array
-//  }
-  
-  func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-    print("Should select viewController: \(viewController.tabBarItem.tag) ?")
-    return true
   }
 }

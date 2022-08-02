@@ -10,14 +10,14 @@ protocol APIClient {
 extension APIClient {
   
   //MARK: publisher way
-  func fetchAndDecode<T: Decodable>(for request: URLRequest, decodeType: T) -> AnyPublisher<T, MyError> {
+  func fetchAndDecode(for request: URLRequest, decodeType: NewsResult) -> AnyPublisher<NewsResult, MyError> {
     
     return session.dataTaskPublisher(for: request)
       .tryMap { element -> Data in
         guard (element.response as? HTTPURLResponse)?.statusCode == 200 else { throw URLError(.badServerResponse) }
         return element.data
       }
-      .decode(type: T.self, decoder: JSONDecoder())
+      .decode(type: NewsResult.self, decoder: JSONDecoder())
       .mapError { error -> MyError in
         switch error {
           case let URLError as URLError:
@@ -38,12 +38,8 @@ extension APIClient {
     guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw URLError(.badServerResponse) }
     
     //saving
-    let fileManager = FileManager()
-    guard let file = fileManager.backupFilePath() else { throw MyError.fileNil }
-    if fileManager.fileExists(atPath: file.path) {
-      print("exist")
-      try FileManager.default.removeItem(at: file)
-    }
+    guard let file = FileManager().backupFilePath() else { throw MyError.fileNil }
+    try FileManager.default.removeItem(at: file)
     try data.write(to: file, options: [.atomic])
     print(file)
   }

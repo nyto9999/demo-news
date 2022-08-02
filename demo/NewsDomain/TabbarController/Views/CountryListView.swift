@@ -4,11 +4,12 @@ import Resolver
 import Veximoji
 
 class CountryListView: UIViewController{
+  
+  //properties
   typealias countriesTuple = (flag: String, name: String)
   var array = [countriesTuple]()
   
   lazy var countries: [countriesTuple] = {
-    
     for country in Constants.isoCountryCode.allCases {
       var tupple:countriesTuple
       tupple.name = country.rawValue
@@ -26,21 +27,19 @@ class CountryListView: UIViewController{
     return tableview
   }()
   
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    view.addSubview(tableview)
+    tableview.delegate = self
+    tableview.dataSource = self
+    self.navigationController?.topViewController?.navigationItem.title = "國家"
+    self.navigationController?.topViewController?.navigationItem.titleView = nil
+  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    view.addSubview(tableview)
-    
-    tableview.delegate = self
-    tableview.dataSource = self
   }
   
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    self.parent?.title = "國家"
-    
-  }
- 
 }
 
 extension CountryListView: UITableViewDelegate, UITableViewDataSource {
