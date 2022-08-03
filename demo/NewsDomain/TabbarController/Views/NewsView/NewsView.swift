@@ -2,7 +2,7 @@ import UIKit
 import Combine
 import Resolver
 import Foundation
- 
+
 class NewsView: UIViewController{
   
   //properties
@@ -11,6 +11,13 @@ class NewsView: UIViewController{
   var imageDict = [Int:Data]()
   let manager = FileManager()
   var subscriptions = Set<AnyCancellable>()
+  var dateFormatter: DateFormatter {
+    let df = DateFormatter()
+    df.locale = Locale(identifier: "UTC")
+    df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssxxxxx"
+    return df
+  }
+  let category = ["  財經  ", "  娛樂  ", "  大眾  ", "  醫療  ", "  自然  ", "  體育  ", "  科技  "]
   
   //layouts
   lazy var tableview:UITableView = {
@@ -26,62 +33,52 @@ class NewsView: UIViewController{
     return spinner
   }()
   
-  var dateFormatter: DateFormatter {
-    let df = DateFormatter()
-    df.locale = Locale(identifier: "UTC")
-    df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssxxxxx"
-    return df
-  }
-   
-  var titleViewButtons: [UIButton] = {
-    var buttons = [UIButton]()
-    let categories = ["business", "entertainment", "general", "health", "science", "sports", "technology"]
-    for (i,c) in categories.enumerated() {
-      let btn = UIButton()
-      btn.setTitle(c, for: .normal)
-      btn.backgroundColor = .systemOrange
-      buttons.append(btn)
-    }
-    return buttons
-  }()
-  
-  lazy var titleView: UIScrollView = {
-    //scrollview
-    let scrollview = UIScrollView(frame: (self.navigationController?.navigationBar.frame)!)
-    scrollview.isScrollEnabled = true
-    scrollview.translatesAutoresizingMaskIntoConstraints = false
+  lazy var scrollableStackView:ScrollableStackView = {
+    let view = ScrollableStackView()
     
-    //hstack
-    let hstack = UIStackView(frame: scrollview.frame)
-    //hstack's button
-    titleViewButtons.forEach { hstack.addArrangedSubview($0) }
-    scrollview.addSubview(hstack)
-    hstack.translatesAutoresizingMaskIntoConstraints = false
-    hstack.heightAnchor.constraint(equalTo: scrollview.heightAnchor).isActive = true
-    hstack.axis = .horizontal
-    hstack.alignment = .fill
-    hstack.distribution = .equalSpacing
-    hstack.spacing = 5
-    return scrollview
+    category.forEach {
+      let label = UILabel()
+      label.text = $0
+      label.font = label.font.withSize(28)
+      label.backgroundColor = .systemGray6
+      label.layer.masksToBounds = true
+      label.layer.cornerRadius = 5
+      
+      view.add(view: label)
+    }
+    view.showsHorizontalScrollIndicator = false
+    return view
   }()
-  
+    
+ 
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
-    self.navigationController?.topViewController?.navigationItem.titleView = titleView
+    _setupViews()
+    _setupConstraints()
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    _setupViews()
-    _setupConstraints()
+    self.navigationController?.topViewController?.navigationItem.titleView = nil
+    self.navigationController?.topViewController?.navigationItem.title = "頭條新聞"
+    
     spinner.startAnimating()
     
-//    manager.fileExists(atPath: manager.backupFilePath()!.path) ?
-//    loadBackupNews() :
+    //    manager.fileExists(atPath: manager.backupFilePath()!.path) ?
+    //    loadBackupNews() :
     
     Task.detached(priority: .medium) {
       try await self._fetchingNews()
     }
+  }
+  
+  private func _setupViews() {
+    tableview.delegate        = self
+    tableview.dataSource      = self
+     
+    view.addSubview(scrollableStackView)
+    view.addSubview(tableview)
+    view.addSubview(spinner)
   }
   
   //fetching from network
@@ -145,32 +142,33 @@ class NewsView: UIViewController{
     
     return try await URLSession.shared.data(from: url).0
   }
-   
+  
   //loading from local
-//  private func loadBackupNews() {
-//    print("loading local news.....")
-//    Task(priority: .medium) {
-//      self.news = try await viewModel.loadBackupNews()
-//      self.tableview.reloadData()
-//      self.spinner.stopAnimating()
-//    }
-//  }
-   
-  private func _setupViews() {
-    view.addSubview(tableview)
-    view.addSubview(spinner)
-    
-    tableview.delegate = self
-    tableview.dataSource = self
-  }
+  //  private func loadBackupNews() {
+  //    print("loading local news.....")
+  //    Task(priority: .medium) {
+  //      self.news = try await viewModel.loadBackupNews()
+  //      self.tableview.reloadData()
+  //      self.spinner.stopAnimating()
+  //    }
+  //  }
   
   private func _setupConstraints() {
-    tableview.frame = view.bounds
+    scrollableStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+    scrollableStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+    scrollableStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+    scrollableStackView.heightAnchor.constraint(equalTo: scrollableStackView.widthAnchor, multiplier: 0.125).isActive = true
+    
+    tableview.topAnchor.constraint(equalTo: scrollableStackView.bottomAnchor).isActive = true
+    tableview.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+    tableview.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+    tableview.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+    
     spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
   }
 }
-
+ 
 extension NewsView: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return news.count
@@ -193,3 +191,4 @@ extension NewsView: UITableViewDelegate, UITableViewDataSource {
     self.navigationController?.pushViewController(vc, animated: true)
   }
 }
+ 

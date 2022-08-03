@@ -17,9 +17,6 @@ class TabBarController:UITabBarController, UITabBarControllerDelegate {
     delegate = self
     self.viewControllers = _tabItemsFactory()
     selectedIndex = 1
-    let backButton = UIBarButtonItem(title: "", style: .plain, target: self.navigationController, action: nil)
-    self.navigationItem.leftBarButtonItem = backButton
-    self.navigationController?.hidesBarsOnSwipe = true
   }
   
   private func _tabItemsFactory() -> [UIViewController] {

@@ -58,9 +58,9 @@ class SearchView: UIViewController{
 //    manager.fileExists(atPath: manager.backupFilePath()!.path) ?
 //    loadBackupNews() :
     
-    Task.detached(priority: .medium) {
-      try await self._fetchingNews()
-    }
+//    Task.detached(priority: .medium) {
+//      try await self._fetchingNews()
+//    }
   }
   
   private func _setupViews() {

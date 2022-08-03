@@ -8,8 +8,10 @@ class LoginViewViewController: UIViewController {
     
     //action
     let action = UIAction(title: "Login") { (action) in
-//      self.navigationController?.pushViewController(NewsView(), animated: true)
-      self.navigationController?.pushViewController(TabBarController(), animated: true)
+      let vc = TabBarController()
+      let nav = UINavigationController(rootViewController: vc)
+      nav.modalPresentationStyle = .overCurrentContext
+      self.present(nav, animated: true, completion: nil)
     }
     
     //
