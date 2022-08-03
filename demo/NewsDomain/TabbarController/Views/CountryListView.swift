@@ -32,8 +32,6 @@ class CountryListView: UIViewController{
     view.addSubview(tableview)
     tableview.delegate = self
     tableview.dataSource = self
-    self.navigationController?.topViewController?.navigationItem.title = "國家"
-    self.navigationController?.topViewController?.navigationItem.titleView = nil
   }
   
   override func viewDidLoad() {

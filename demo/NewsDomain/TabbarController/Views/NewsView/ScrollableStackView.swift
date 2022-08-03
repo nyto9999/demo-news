@@ -17,7 +17,7 @@ public class ScrollableStackView: UIView {
     let stackView = UIStackView(frame: .zero)
     stackView.translatesAutoresizingMaskIntoConstraints = false
     stackView.axis = .horizontal
-    stackView.alignment = .center
+    stackView.alignment = .fill
     stackView.distribution = .fill
     stackView.spacing = 18
     return stackView
@@ -28,6 +28,9 @@ public class ScrollableStackView: UIView {
     super.didMoveToSuperview()
     translatesAutoresizingMaskIntoConstraints = false
     clipsToBounds = true
+    
+
+    
     addSubview(scrollView)
     scrollView.addSubview(stackView)
     setNeedsUpdateConstraints()
@@ -38,10 +41,10 @@ public class ScrollableStackView: UIView {
     if !didSetupConstraints {
       NSLayoutConstraint.activate([
         scrollView.topAnchor.constraint(equalTo: topAnchor),
-        scrollView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-        scrollView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+        scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
+        scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
         scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
-        scrollView.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 0.25),
+//        scrollView.heightAnchor.constraint(equalTo: scrollView.widthAnchor, multiplier: 0.2),
         stackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
         stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
         stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
@@ -93,6 +96,7 @@ extension ScrollableStackView {
     }
   }
   
+  
   public var distribution: UIStackView.Distribution {
     get {
       return stackView.distribution
@@ -101,6 +105,7 @@ extension ScrollableStackView {
       stackView.distribution = newValue
     }
   }
+  
   
   public var showsHorizontalScrollIndicator: Bool {
     get {
@@ -116,7 +121,7 @@ extension ScrollableStackView {
       return scrollView.showsVerticalScrollIndicator
     }
     set {
-      scrollView.showsVerticalScrollIndicator = newValue
+      scrollView.showsHorizontalScrollIndicator = newValue
     }
   }
   

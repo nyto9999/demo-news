@@ -1,7 +1,20 @@
 import Foundation
 
 enum Constants {
+  
   static let backgroundTaskIdentifier = "yuhsuan.demo.task.refresh"
+  
+  static var dateFormatter: DateFormatter {
+    let df = DateFormatter()
+    df.locale = Locale(identifier: "UTC")
+    df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssxxxxx"
+    return df
+  }
+  
+  /// Auto-search at least this frequently while typing
+  public static let longAutoSearchDelay: TimeInterval = 2.0
+  /// Trigger automatically after a pause of this length
+  public static let shortAutoSearchDelay: TimeInterval = 0.75
   
   enum NewsType: String {
     case everything = "everything"
@@ -16,6 +29,15 @@ enum Constants {
     case taiwan = "tw"
   }
   
+  enum Category:String, CaseIterable {
+    case 財經 = "business"
+    case 娛樂 = "entertainment"
+    case 大眾 = "general"
+    case 醫療 = "health"
+    case 自然 = "science"
+    case 體育 = "sports"
+    case 科技 = "technology"
+  }
   
   enum isoCountryCode:String, CaseIterable {
     case ae = "ae"
@@ -70,8 +92,6 @@ enum Constants {
     case ua = "ua"
     case us = "us"
     case za = "za"
-    
-     
   }
   
 

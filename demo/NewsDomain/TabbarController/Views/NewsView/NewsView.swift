@@ -7,22 +7,22 @@ class NewsView: UIViewController{
   
   //properties
   @Injected private var viewModel: NewsViewModel
-  var news = [News]()
-  var imageDict = [Int:Data]()
-  let manager = FileManager()
+  var dateFormatter = Constants.dateFormatter
   var subscriptions = Set<AnyCancellable>()
-  var dateFormatter: DateFormatter {
-    let df = DateFormatter()
-    df.locale = Locale(identifier: "UTC")
-    df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssxxxxx"
-    return df
+  var news = [News]()
+  var imageDict = [Int:Data]() {
+    didSet {
+      self.tableview.reloadData()
+      self.spinner.stopAnimating()
+    }
   }
-  let category = ["  財經  ", "  娛樂  ", "  大眾  ", "  醫療  ", "  自然  ", "  體育  ", "  科技  "]
   
   //layouts
   lazy var tableview:UITableView = {
-    let tableview = UITableView(frame: view.frame)
+    let tableview = UITableView()
     tableview.register(NewsCellView.self, forCellReuseIdentifier: NewsCellView.id)
+    tableview.delegate        = self
+    tableview.dataSource      = self
     tableview.translatesAutoresizingMaskIntoConstraints = false
     return tableview
   }()
@@ -33,114 +33,61 @@ class NewsView: UIViewController{
     return spinner
   }()
   
-  lazy var scrollableStackView:ScrollableStackView = {
+  lazy var categoryHstack:ScrollableStackView = {
     let view = ScrollableStackView()
-    
-    category.forEach {
+    Constants.Category.allCases.forEach {
       let label = UILabel()
-      label.text = $0
+      label.text = "\($0)"
       label.font = label.font.withSize(28)
       label.backgroundColor = .systemGray6
       label.layer.masksToBounds = true
       label.layer.cornerRadius = 5
-      
       view.add(view: label)
     }
     view.showsHorizontalScrollIndicator = false
     return view
   }()
-    
- 
+  
+  private lazy var searchBar: UISearchBar = {
+    let sb = UISearchBar()
+    sb.placeholder = "Search"
+    sb.showsCancelButton = false
+    sb.delegate = self
+    return sb
+  }()
+  
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
+    //    self.navigationController?.navigationBar.topItem?.searchController = searchController
+    //    self.navigationController?.topViewController?.navigationItem.searchController = searchController
+    self.navigationController?.topViewController?.navigationItem.titleView = searchBar
     _setupViews()
     _setupConstraints()
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    self.navigationController?.topViewController?.navigationItem.titleView = nil
-    self.navigationController?.topViewController?.navigationItem.title = "頭條新聞"
-    
-    spinner.startAnimating()
     
     //    manager.fileExists(atPath: manager.backupFilePath()!.path) ?
     //    loadBackupNews() :
-    
+    spinner.startAnimating()
     Task.detached(priority: .medium) {
       try await self._fetchingNews()
     }
+    
   }
   
   private func _setupViews() {
-    tableview.delegate        = self
-    tableview.dataSource      = self
-     
-    view.addSubview(scrollableStackView)
+    view.addSubview(categoryHstack)
     view.addSubview(tableview)
     view.addSubview(spinner)
   }
   
   //fetching from network
   private func _fetchingNews() async throws {
-    print("fetching network news.....")
-    let imageData = await newsPublisher()
-    try await self._downloadAllImages(for: imageData)
-  }
-  
-  private func newsPublisher() async -> [News] {
-    return await withCheckedContinuation { continuation in
-      viewModel.newsTopHeadlines()
-        .receive(on: DispatchQueue.main)
-        .sink {completion in
-          switch completion {
-            case .finished:
-              self.tableview.reloadData()
-            case .failure:
-              self.tableview.isHidden = true
-          }
-        } receiveValue: { value in
-          continuation.resume(returning: value)
-          self.spinner.stopAnimating()
-        }
-        .store(in: &subscriptions)
-    }
-  }
-  
-  private func _downloadAllImages(for news: [News]) async throws {
-    var dict = [Int:Data]()
-    let taskResult = (index: Int, image: Data?).self
-    
-    //async
-    try await withThrowingTaskGroup(of: taskResult) { [unowned self] group in
-      //concurrent
-      for index in 0..<news.count {
-        group.addTask {
-          let imgData = try await self.downloadImage(urlString: news[index].urlToImage)
-          return (index, imgData)
-        }
-      }
-      
-      //async wait for concurrent
-      for try await newsArray in group {
-        dict[newsArray.index] = newsArray.image
-      }
-    }
-    
-    self.imageDict = dict
-    self.news = news
-    DispatchQueue.main.async {
-      self.tableview.reloadData()
-    }
-  }
-  
-  func downloadImage(urlString: String?) async throws -> Data? {
-    
-    guard let urlString = urlString,
-          let url = URL(string: urlString)
-    else { return Data() }
-    
-    return try await URLSession.shared.data(from: url).0
+    let newsFeed = try await viewModel.fetchingNewsAndImageData()
+    self.news = newsFeed.news
+    self.imageDict = newsFeed.ImageData
   }
   
   //loading from local
@@ -154,12 +101,13 @@ class NewsView: UIViewController{
   //  }
   
   private func _setupConstraints() {
-    scrollableStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-    scrollableStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-    scrollableStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-    scrollableStackView.heightAnchor.constraint(equalTo: scrollableStackView.widthAnchor, multiplier: 0.125).isActive = true
     
-    tableview.topAnchor.constraint(equalTo: scrollableStackView.bottomAnchor).isActive = true
+    categoryHstack.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+    categoryHstack.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+    categoryHstack.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+    categoryHstack.heightAnchor.constraint(equalTo: categoryHstack.widthAnchor, multiplier: 0.125).isActive = true
+    
+    tableview.topAnchor.constraint(equalTo: categoryHstack.bottomAnchor).isActive = true
     tableview.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
     tableview.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
     tableview.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
@@ -168,7 +116,7 @@ class NewsView: UIViewController{
     spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
   }
 }
- 
+
 extension NewsView: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return news.count
@@ -191,4 +139,19 @@ extension NewsView: UITableViewDelegate, UITableViewDataSource {
     self.navigationController?.pushViewController(vc, animated: true)
   }
 }
- 
+
+extension NewsView: UISearchBarDelegate {
+  func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    searchBar.resignFirstResponder()
+  }
+  
+  func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+    Task.detached() {
+      print("hhihihi")
+      await self.viewModel.search(searchText: searchBar.text ?? "")
+        
+    }
+    print("done")
+  }
+}
+
