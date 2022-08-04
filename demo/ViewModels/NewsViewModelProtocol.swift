@@ -11,13 +11,13 @@ protocol NewsViewModelProtocol {
   
   
   // 1 called by view
-  func fetchingNewsAndImageData() async throws -> newsFeed
+  func fetchingNewsAndImageData(type: NewsType) async throws -> newsFeed
   
   // 2 publisher fetching news
-  func _fetchingNewsData() async -> [News]
+  func fetchingNewsData(type: NewsType) async -> [News]
   
   // 3 convert feteched news imgString to img data
-  func _convertUrlToImage(for news: [News]) async throws -> newsFeed
+  func concurrentImagesDownloader(for news: [News]) async throws -> newsFeed
   
   // 4
   func imageDownloader(urlString: String?) async throws -> UIImage?

@@ -2,8 +2,8 @@ import Foundation
 import UIKit
 
 class TabBarController:UITabBarController, UITabBarControllerDelegate {
-   
-   
+    
+  //MARK: Life Cycle
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     self.navigationController?.isNavigationBarHidden = true
@@ -11,17 +11,17 @@ class TabBarController:UITabBarController, UITabBarControllerDelegate {
   }
   override func viewDidLoad() {
     super.viewDidLoad()
-   
   }
   
+  //MARK: UI
   private func _setupViews() {
     delegate = self
     self.viewControllers = _tabItemsFactory()
     selectedIndex = 1
   }
   
+  //MARK: Methods
   private func _tabItemsFactory() -> [UIViewController] {
-    
     let views = [
       UINavigationController(rootViewController: SearchView()),
       UINavigationController(rootViewController: NewsView()),
@@ -37,7 +37,6 @@ class TabBarController:UITabBarController, UITabBarControllerDelegate {
     for (index, view) in views.enumerated() {
       view.tabBarItem = icons[index]
     }
-    
     return views
   }
 }

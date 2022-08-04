@@ -2,47 +2,59 @@ import UIKit
 import Combine
 import Resolver
 
+enum NewsType {
+  case `default`
+  case search(searchText: String)
+}
+
 final class NewsViewModel {
-  
+  //MARK: Properties
   @Injected private var newsClient: NewsClient
-  var news = ([News], [Int:Data]).self
   var subscriptions = Set<AnyCancellable>()
-  private(set) var verifiedCount = 0
 }
 
 extension NewsViewModel: NewsViewModelProtocol {
- 
+  
   typealias newsFeed = (news: [News], images: [Int : UIImage?])
   typealias newsPublisher = AnyPublisher<[News], MyError>
-  
-  
+   
   func search(searchText: String) -> newsPublisher {
     return newsClient.search(searchText: searchText).map { $0.news.sorted { $0 > $1 } }
       .eraseToAnyPublisher()
   }
- 
+   
   // called by view
-  func fetchingNewsAndImageData() async throws -> newsFeed {
-    let fetchedNews = await _fetchingNewsData()
-    return try await _convertUrlToImage(for: fetchedNews)
+  func fetchingNewsAndImageData(type: NewsType) async throws -> newsFeed {
+    let fetchedNews = await fetchingNewsData(type: type)
+    return try await concurrentImagesDownloader(for: fetchedNews)
   }
-  
-  func _fetchingNewsData() async -> [News] {
-    return await withCheckedContinuation { continuation in
-      newsClient.getTopheadlines().map { $0.news.sorted { $0 > $1 } }
-        .receive(on: DispatchQueue.main)
-        .sink {completion in
-          print("completion")
-        } receiveValue: { news in
-          continuation.resume(returning: news)
+   
+  func fetchingNewsData(type: NewsType) async -> [News] {
+    
+    switch type {
+      case .default:
+        return await withCheckedContinuation { continuation in
+          newsClient.getTopheadlines().map { $0.news.sorted { $0 > $1 } }
+            .receive(on: DispatchQueue.main)
+            .sink {completion in
+              print("completion")
+            } receiveValue: { news in
+              continuation.resume(returning: news)
+            }
+            .store(in: &subscriptions)
         }
-        .store(in: &subscriptions)
+      case .search(let searchText):
+        print(searchText)
+        break
     }
+    
+    //nil
+    return [News]()
   }
   
-  func _convertUrlToImage(for news: [News]) async throws -> newsFeed {
+  func concurrentImagesDownloader(for news: [News]) async throws -> newsFeed {
     var imageSet = [Int:UIImage?]()
-     
+    
     //async
     let taskResult = (index: Int, image: UIImage?).self
     try await withThrowingTaskGroup(of: taskResult) { [unowned self] group in
@@ -67,10 +79,9 @@ extension NewsViewModel: NewsViewModelProtocol {
           let url = URL(string: urlString),
           let data = try? await URLSession.shared.data(from: url).0
     else { return UIImage() }
-    
     return UIImage(data: data)
   }
-    
+  
   func loadBackupNews() async throws -> [News] {
     try await newsClient.fetchAndSave()
     return try self._decodeBackupData()

@@ -6,7 +6,6 @@ protocol APIClient {
   var session: URLSession { get }
 }
 
-
 extension APIClient {
   
   //MARK: Fetching NewsAPI & Decoding

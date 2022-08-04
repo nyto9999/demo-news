@@ -96,7 +96,7 @@ class NewsView: UIViewController{
    
   // MARK: Actions
   private func _fetchingNews() async throws {
-    let newsFeed = try await viewModel.fetchingNewsAndImageData()
+    let newsFeed = try await viewModel.fetchingNewsAndImageData(type: NewsType.default)
     self.news = newsFeed.news
     self.images = newsFeed.images
   }
