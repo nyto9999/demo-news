@@ -1,9 +1,10 @@
 import Foundation
 import Combine
+import UIKit
 
 protocol NewsViewModelProtocol {
   //publisher way
-  typealias newsFeed = (news: [News], ImageData: [Int:Data])
+  typealias newsFeed = (news: [News], images: [Int:UIImage?])
   typealias newsPublisher = AnyPublisher<[News], MyError>
   
   func search(searchText: String) -> newsPublisher
@@ -19,5 +20,5 @@ protocol NewsViewModelProtocol {
   func _convertUrlToImage(for news: [News]) async throws -> newsFeed
   
   // 4
-  func _downloadImage(urlString: String?) async throws -> Data?
+  func imageDownloader(urlString: String?) async throws -> UIImage?
 }

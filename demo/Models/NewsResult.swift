@@ -12,7 +12,6 @@ class NewsResult: Decodable {
   required public init(from decoder: Decoder) throws {
     guard let container = try? decoder.container(keyedBy: NewsCodingKeys.self)
     else { throw NSError(domain: "decode news failed", code: 1) }
-    
     self.news = try container.decode([News].self, forKey: NewsCodingKeys.news)
   }
 }

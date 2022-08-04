@@ -15,8 +15,6 @@ class MockNewsClient: APIClient, MockProtocol {
     let request = NewsProvider.search(searchText: searchText).reuqest
     return fetchAndDecode(for: request, decodeType: NewsResult())
   }
- 
- 
 }
 
 

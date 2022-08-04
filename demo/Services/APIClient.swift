@@ -6,10 +6,10 @@ protocol APIClient {
   var session: URLSession { get }
 }
 
-//MARK: Network request then decode
+
 extension APIClient {
   
-  //MARK: publisher way
+  //MARK: Fetching NewsAPI & Decoding
   func fetchAndDecode(for request: URLRequest, decodeType: NewsResult) -> AnyPublisher<NewsResult, MyError> {
     
     return session.dataTaskPublisher(for: request)
@@ -30,9 +30,8 @@ extension APIClient {
       }
       .eraseToAnyPublisher()
   }
-  
-
-  
+   
+  //MARK: Fetching NewsAPI & Save File in Memory for Background Tasks
   func fetchAndSave(for request: URLRequest) async throws {
     
     //fetching

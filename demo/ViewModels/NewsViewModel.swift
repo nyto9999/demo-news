@@ -3,21 +3,24 @@ import Combine
 import Resolver
 
 final class NewsViewModel {
+  
   @Injected private var newsClient: NewsClient
   var news = ([News], [Int:Data]).self
   var subscriptions = Set<AnyCancellable>()
+  private(set) var verifiedCount = 0
 }
 
 extension NewsViewModel: NewsViewModelProtocol {
  
-  typealias newsFeed = (news: [News], ImageData: [Int:Data])
+  typealias newsFeed = (news: [News], images: [Int : UIImage?])
   typealias newsPublisher = AnyPublisher<[News], MyError>
+  
   
   func search(searchText: String) -> newsPublisher {
     return newsClient.search(searchText: searchText).map { $0.news.sorted { $0 > $1 } }
       .eraseToAnyPublisher()
   }
-  
+ 
   // called by view
   func fetchingNewsAndImageData() async throws -> newsFeed {
     let fetchedNews = await _fetchingNewsData()
@@ -38,32 +41,36 @@ extension NewsViewModel: NewsViewModelProtocol {
   }
   
   func _convertUrlToImage(for news: [News]) async throws -> newsFeed {
-    var dict = [Int:Data]()
-    let taskResult = (index: Int, image: Data?).self
+    var imageSet = [Int:UIImage?]()
+     
     //async
+    let taskResult = (index: Int, image: UIImage?).self
     try await withThrowingTaskGroup(of: taskResult) { [unowned self] group in
       //concurrent
       for index in 0..<news.count {
         group.addTask {
-          let imgData = try await self._downloadImage(urlString: news[index].urlToImage)
-          return (index, imgData)
+          let img = await self.imageDownloader(urlString: news[index].urlToImage)
+          return (index, img)
         }
       }
       //async wait for concurrent
-      for try await newsArray in group {
-        dict[newsArray.index] = newsArray.image
+      
+      for try await imageDownloader in group {
+        imageSet[imageDownloader.index] = imageDownloader.image
       }
     }
-    return (news,dict)
+    return (news,imageSet)
   }
   
-  func _downloadImage(urlString: String?) async throws -> Data? {
+  func imageDownloader(urlString: String?) async -> UIImage? {
     guard let urlString = urlString,
-          let url = URL(string: urlString)
-    else { return Data() }
-    return try await URLSession.shared.data(from: url).0
+          let url = URL(string: urlString),
+          let data = try? await URLSession.shared.data(from: url).0
+    else { return UIImage() }
+    
+    return UIImage(data: data)
   }
-   
+    
   func loadBackupNews() async throws -> [News] {
     try await newsClient.fetchAndSave()
     return try self._decodeBackupData()

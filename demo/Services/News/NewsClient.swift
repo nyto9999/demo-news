@@ -6,7 +6,6 @@ final class NewsClient: APIClient, NewsClientProtocol {
  
   @Injected internal var session: URLSession
   
-  // MARK: publisher way
   func getTopheadlines() -> AnyPublisher<NewsResult, MyError> {
     let request = NewsProvider.getTopheadlines.reuqest
     return fetchAndDecode(for: request, decodeType: NewsResult())

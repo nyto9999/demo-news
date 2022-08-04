@@ -3,10 +3,10 @@ import WebKit
 
 class NewsDetail: UIViewController {
   
-  //properties
+  // MARK: Properties
   var link = ""
   
-  //layouts
+  // MARK: Layouts
   lazy var webview:WKWebView = {
     let webview = WKWebView()
     let url = URL(string: link)!
@@ -22,22 +22,31 @@ class NewsDetail: UIViewController {
     spinner.hidesWhenStopped = true
     return spinner
   }()
-  
-  //constraints
-  private func _setupConstraint() {
-    spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-    spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+   
+  // MARK: Life Cycle
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    _setupViews()
+    _setupConstraint()
   }
   
   override func viewDidLoad() {
     super.viewDidLoad()
+  }
+  
+  // MARK: UI
+  private func _setupViews() {
     webview.navigationDelegate = self
     view = webview
     view.addSubview(spinner)
-    _setupConstraint()
+  }
+  private func _setupConstraint() {
+    spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
   }
 }
 
+// MARK: WKWebView delegate
 extension NewsDetail: WKNavigationDelegate {
   func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
     spinner.startAnimating()

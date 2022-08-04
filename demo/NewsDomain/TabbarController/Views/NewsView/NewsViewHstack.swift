@@ -1,6 +1,6 @@
 import UIKit
 
-public class ScrollableStackView: UIView {
+public class NewsViewHstack: UIView {
   
   // MARK: Properties
   private var didSetupConstraints = false
@@ -28,9 +28,6 @@ public class ScrollableStackView: UIView {
     super.didMoveToSuperview()
     translatesAutoresizingMaskIntoConstraints = false
     clipsToBounds = true
-    
-
-    
     addSubview(scrollView)
     scrollView.addSubview(stackView)
     setNeedsUpdateConstraints()
@@ -58,7 +55,7 @@ public class ScrollableStackView: UIView {
 }
 
 // MARK: - ScrollableStackView - Actions
-extension ScrollableStackView {
+extension NewsViewHstack {
   
   public func add(view: UIView) {
     stackView.addArrangedSubview(view)
@@ -75,7 +72,7 @@ extension ScrollableStackView {
 }
 
 
-extension ScrollableStackView {
+extension NewsViewHstack {
   
   public var spacing: CGFloat {
     get {

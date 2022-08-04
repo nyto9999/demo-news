@@ -8,6 +8,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
     guard let windowScene = (scene as? UIWindowScene) else { return }
     
+    // MARK: Background Tasks
     BGTaskScheduler.shared.register(
       forTaskWithIdentifier: Constants.backgroundTaskIdentifier,
       using: nil)
@@ -25,12 +26,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         task.setTaskCompleted(success: true)
       }
     
+    // MARK: Windows
     window = UIWindow(frame: windowScene.coordinateSpace.bounds)
     window?.windowScene = windowScene
     window?.makeKeyAndVisible()
     let vc = LoginViewViewController()
     window?.rootViewController = vc
-    
   }
   
   func sceneDidDisconnect(_ scene: UIScene) {
@@ -48,7 +49,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   func sceneDidEnterBackground(_ scene: UIScene) {
     self.scheduleAppRefresh()
   }
-  
+  // MARK: Schedule Background Tasks in sceneDidEnterBackground
   func scheduleAppRefresh() {
     
     let request = BGAppRefreshTaskRequest(identifier: Constants.backgroundTaskIdentifier)
@@ -57,7 +58,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 //    request.earliestBeginDate = Date(timeIntervalSinceNow: 60 * 60)
     request.earliestBeginDate = Date(timeIntervalSinceNow: 5)
     do {
-      
       print("scheduling...")
       try BGTaskScheduler.shared.submit(request)
     }
