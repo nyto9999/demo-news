@@ -21,7 +21,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         print("prefetching in bg...")
 
         Task {
-          try await NewsClient().fetchAndSave()
+          try await NewsClient().receiveData(type:.backup)
         }
         task.setTaskCompleted(success: true)
       }

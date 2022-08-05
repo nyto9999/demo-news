@@ -11,6 +11,5 @@ extension Resolver: ResolverRegistering {
     register { NewsViewModel() }
       .implements(NewsViewModelProtocol.self)
     
-    ///parameter injection
   }
 }

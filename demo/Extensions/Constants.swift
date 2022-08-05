@@ -16,10 +16,7 @@ enum Constants {
   /// Trigger automatically after a pause of this length
   public static let shortAutoSearchDelay: TimeInterval = 0.75
   
-  enum NewsType: String {
-    case everything = "everything"
-    case headlines = "headlines"
-  }
+ 
   
   enum UserDefaultsKeys {
     static let lastRefreshDateKey = "lastRefreshDate"

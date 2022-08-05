@@ -1,7 +1,7 @@
 import Foundation
 
 enum NewsProvider {
-  case getTopheadlines
+  case newsPath
   case search(searchText: String)
   case searchCountry(code: String)
 }
@@ -19,7 +19,7 @@ extension NewsProvider: Endpoint {
   
   var path: String {
     switch self {
-      case .getTopheadlines:
+      case .newsPath:
         return "/v2/top-headlines"
       case .search(searchText:):
         return "/v2/everything"
@@ -34,7 +34,7 @@ extension NewsProvider: Endpoint {
   
   var params: [String : Any]? {
     switch self {
-      case .getTopheadlines:
+      case .newsPath:
         return ["country": RegionCodeHelper.getCurrentCountryCode()]
       case .search(searchText: let searchText):
         return ["q" : searchText]
@@ -45,7 +45,7 @@ extension NewsProvider: Endpoint {
  
   var method: HTTPMethod {
     switch self {
-      case .getTopheadlines,.search(searchText:), .searchCountry(code:):
+      case .newsPath,.search(searchText:), .searchCountry(code:):
         return .get
     }
   }

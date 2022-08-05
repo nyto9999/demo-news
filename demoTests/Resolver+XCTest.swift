@@ -8,6 +8,7 @@ extension Resolver {
   static func registerMockServices() {
     root = Resolver.mock
     defaultScope = .application
-    Resolver.mock.register { MockNewsClient() }.implements(MockProtocol.self)
+    
+    Resolver.mock.register { MockNewsClient() }.implements(URLRequest.self)
   }
 }

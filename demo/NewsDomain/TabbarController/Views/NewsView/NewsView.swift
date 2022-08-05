@@ -1,5 +1,4 @@
 import UIKit
-import Combine
 import Resolver
 import Foundation
 
@@ -18,7 +17,6 @@ class NewsView: UIViewController{
   // MARK: Properties
   @Injected private var viewModel: NewsViewModel
   var dateFormatter = Constants.dateFormatter
-  var subscriptions = Set<AnyCancellable>()
   var lastContentOffset: CGFloat = 0
    
   // MARK: Layouts
@@ -96,9 +94,14 @@ class NewsView: UIViewController{
    
   // MARK: Actions
   private func _fetchingNews() async throws {
-    let newsFeed = try await viewModel.fetchingNewsAndImageData(type: NewsType.default)
-    self.news = newsFeed.news
-    self.images = newsFeed.images
+    do {
+      let newsFeed = try await viewModel.fetchingNewsFeed(type: .default)
+      self.news = newsFeed.news
+      self.images = newsFeed.images
+    }
+    catch {
+      print(error)
+    }
   }
   
   //loading from local

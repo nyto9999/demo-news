@@ -1,43 +1,22 @@
 import Foundation
-import Combine
-import SwiftUI
 
-protocol APIClient {
-  var session: URLSession { get }
-}
+protocol APIClient {}
 
 extension APIClient {
   
-  //MARK: Fetching NewsAPI & Decoding
-  func fetchAndDecode(for request: URLRequest, decodeType: NewsResult) -> AnyPublisher<NewsResult, MyError> {
-    
-    return session.dataTaskPublisher(for: request)
-      .tryMap { element -> Data in
-        guard (element.response as? HTTPURLResponse)?.statusCode == 200 else { throw URLError(.badServerResponse) }
-        return element.data
-      }
-      .decode(type: NewsResult.self, decoder: JSONDecoder())
-      .mapError { error -> MyError in
-        switch error {
-          case let URLError as URLError:
-            return .networkFailed(error: URLError, url: request.url!)
-          case let decode as Swift.DecodingError:
-            return .decodingFailed(error: decode)
-          default:
-            return .unknown
-        }
-      }
-      .eraseToAnyPublisher()
-  }
-   
-  //MARK: Fetching NewsAPI & Save File in Memory for Background Tasks
-  func fetchAndSave(for request: URLRequest) async throws {
-    
-    //fetching
+  func fetch(for request: URLRequest) async throws -> Data {
     let (data, response) = try await URLSession.shared.data(for: request, delegate: nil)
     guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw URLError(.badServerResponse) }
-    
-    //saving
+    return data
+  }
+  
+  func decoder<T: Decodable>(for data: Data, type: T) throws -> T {
+      return try JSONDecoder().decode(T.self, from: data)
+  }
+  
+  //MARK: Fetching NewsAPI & Save File in Memory for Background Tasks
+  func storeData(for request: URLRequest) async throws {
+    let data = try await self.fetch(for: request)
     guard let file = FileManager().backupFilePath() else { throw MyError.fileNil }
     try FileManager.default.removeItem(at: file)
     try data.write(to: file, options: [.atomic])

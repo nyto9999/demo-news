@@ -1,11 +1,15 @@
 import Foundation
-import Combine
+import UIKit
 
 protocol NewsClientProtocol {
   
-  func getTopheadlines() -> AnyPublisher<NewsResult, MyError>
+  typealias newsFeed = (news: [News], images: [Int:UIImage?])
   
-  func search(searchText: String) -> AnyPublisher<NewsResult, MyError>
+  func receiveData(type: NewsType) async throws -> newsFeed
   
-  func fetchAndSave() async throws
+  func cImgsDownloader(for news: [News]) async throws -> newsFeed
+  
+  func imgDownloader(urlString: String?) async -> UIImage?
+
 }
+
