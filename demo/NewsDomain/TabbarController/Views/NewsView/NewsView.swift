@@ -18,7 +18,8 @@ class NewsView: UIViewController{
   @Injected private var viewModel: NewsViewModel
   var dateFormatter = Constants.dateFormatter
   var lastContentOffset: CGFloat = 0
-   
+  var hasBackup:Bool = FileManager().fileExists(atPath: FileManager().backupFilePath()!.path)
+  
   // MARK: Layouts
   lazy var tableview:UITableView = {
     let tableview = UITableView()
@@ -44,6 +45,8 @@ class NewsView: UIViewController{
       label.backgroundColor = .systemGray6
       label.layer.masksToBounds = true
       label.layer.cornerRadius = 5
+      label.tag
+      label.isUserInteractionEnabled = true
       hstack.add(view: label)
     }
     hstack.showsHorizontalScrollIndicator = false
@@ -59,9 +62,7 @@ class NewsView: UIViewController{
   
   override func viewDidLoad() {
     super.viewDidLoad()
-     
-    //    manager.fileExists(atPath: manager.backupFilePath()!.path) ?
-    //    loadBackupNews() :
+    
     spinner.startAnimating()
     
     Task.detached(priority: .medium) {
@@ -94,8 +95,9 @@ class NewsView: UIViewController{
    
   // MARK: Actions
   private func _fetchingNews() async throws {
+    let type: NewsType = hasBackup ? .loadBackup : .default
     do {
-      let newsFeed = try await viewModel.fetchingNewsFeed(type: .default)
+      let newsFeed = try await viewModel.fetchingNewsFeed(type: type)
       self.news = newsFeed.news
       self.images = newsFeed.images
     }
@@ -103,16 +105,6 @@ class NewsView: UIViewController{
       print(error)
     }
   }
-  
-  //loading from local
-  //  private func loadBackupNews() {
-  //    print("loading local news.....")
-  //    Task(priority: .medium) {
-  //      self.news = try await viewModel.loadBackupNews()
-  //      self.tableview.reloadData()
-  //      self.spinner.stopAnimating()
-  //    }
-  //  }
 }
 
 //MARK: tableview delegates

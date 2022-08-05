@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 
 class NewsCell: UITableViewCell {
-  static let id = "searchcell"
   
   // MARK: Layouts
   private var _titleLabel: UILabel = {
@@ -81,4 +80,5 @@ class NewsCell: UITableViewCell {
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
+  static let id = "cell"
 }
