@@ -1,7 +1,8 @@
 import Foundation
+import UIKit
 
 enum Constants {
-  
+  typealias newsFeed = (news: [News], images: [Int:UIImage?])
   static let backgroundTaskIdentifier = "yuhsuan.demo.task.refresh"
   
   static var dateFormatter: DateFormatter {
@@ -15,9 +16,7 @@ enum Constants {
   public static let longAutoSearchDelay: TimeInterval = 2.0
   /// Trigger automatically after a pause of this length
   public static let shortAutoSearchDelay: TimeInterval = 0.75
-  
- 
-  
+   
   enum UserDefaultsKeys {
     static let lastRefreshDateKey = "lastRefreshDate"
   }

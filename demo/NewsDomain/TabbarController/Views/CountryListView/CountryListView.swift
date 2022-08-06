@@ -14,7 +14,6 @@ class CountryListView: UIViewController{
       var tupple:countriesTuple
       tupple.name = country.rawValue
       tupple.flag =  Veximoji.country(code: tupple.name.uppercased())!
-      
       array.append(tupple)
     }
     return array

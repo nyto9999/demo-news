@@ -1,7 +1,7 @@
 import UIKit
 import WebKit
 
-class NewsDetail: UIViewController {
+class NewsWebView: UIViewController {
   
   // MARK: Properties
   var link = ""
@@ -47,7 +47,7 @@ class NewsDetail: UIViewController {
 }
 
 // MARK: WKWebView delegate
-extension NewsDetail: WKNavigationDelegate {
+extension NewsWebView: WKNavigationDelegate {
   func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
     spinner.startAnimating()
   }

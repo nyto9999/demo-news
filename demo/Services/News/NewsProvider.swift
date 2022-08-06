@@ -2,8 +2,8 @@ import Foundation
 
 enum NewsProvider {
   case newsPath
-  case search(searchText: String)
-  case searchCountry(code: String)
+  case searchPath(searchText: String)
+  case countryPath(code: String)
 }
  
 // MARK: Endpoint
@@ -21,10 +21,10 @@ extension NewsProvider: Endpoint {
     switch self {
       case .newsPath:
         return "/v2/top-headlines"
-      case .search(searchText:):
-        return "/v2/everything"
-      case .searchCountry(code:):
+      case .countryPath(code:):
         return "/v2/top-headlines"
+      case .searchPath(searchText:):
+        return "/v2/everything"
     }
   }
   
@@ -36,16 +36,16 @@ extension NewsProvider: Endpoint {
     switch self {
       case .newsPath:
         return ["country": RegionCodeHelper.getCurrentCountryCode()]
-      case .search(searchText: let searchText):
+      case .searchPath(searchText: let searchText):
         return ["q" : searchText]
-      case .searchCountry(code: let code):
+      case .countryPath(code: let code):
         return ["country": code]
     }
   }
  
   var method: HTTPMethod {
     switch self {
-      case .newsPath,.search(searchText:), .searchCountry(code:):
+      case .newsPath,.searchPath(searchText:), .countryPath(code:):
         return .get
     }
   }

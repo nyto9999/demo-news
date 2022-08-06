@@ -1,13 +1,10 @@
 import UIKit
 import Resolver
-import Combine
-import UIKit
 
 class SearchView: UIViewController {
+  
   // MARK: Feeds
-  var news = [News]()
-  var images = [Int:UIImage?]() {
-    // news dependent on images
+  var news = [News]() {
     didSet {
       tableview.reloadData()
       spinner.stopAnimating()
@@ -58,7 +55,7 @@ class SearchView: UIViewController {
   private func _setupConstraints() {
     let vd = [
       "tableview" : tableview,
-      "spinner" : spinner
+      "spinner"   : spinner
     ]
     
     view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[tableview]-|", options: [], metrics: nil, views: vd))
@@ -82,13 +79,11 @@ extension SearchView: UISearchBarDelegate {
   func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
     Task(priority: .medium) {
       let newsFeed = try await viewModel.fetchingNewsFeed(type: .search(searchText: searchBar.text!))
-      self.news = newsFeed.news
-      self.images = newsFeed.images
+      self.news = newsFeed
+      self.spinner.startAnimating()
     }
   }
-  
-  
-  
+   
   func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
     print(searchText)
   }
@@ -107,7 +102,7 @@ extension SearchView: UITableViewDelegate, UITableViewDataSource {
     let date = dateString!.formatted(date: .complete, time: .shortened)
  
     //cell config
-    cell.configure(text: news.title, author: (news.author != nil) ? "來源：\(news.author!)" : "", image: images[indexPath.row]!, date: date)
+    cell.configure(text: news.title, author: (news.author != nil) ? "來源：\(news.author!)" : "", key: news.urlToImage, date: date)
     return cell
   }
 }

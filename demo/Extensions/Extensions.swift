@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import Accelerate
+
 extension URLRequest {
   mutating func setHeader(for httpHeaderField: String, with value: String) {
     setValue(value, forHTTPHeaderField: httpHeaderField)
@@ -11,6 +12,11 @@ extension FileManager {
   func backupFilePath() -> URL? {
     let documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
     return documentDirectory?.appendingPathComponent("news").appendingPathExtension("json")
+  }
+  
+  class func fileExists(filePath: String) -> Bool {
+      var isDirectory = ObjCBool(false)
+      return self.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
   }
 }
 
@@ -27,14 +33,7 @@ extension UIImage {
         return jpegData(compressionQuality: jpegQuality.rawValue)
     }
 }
-
-extension FileManager {
-    class func fileExists(filePath: String) -> Bool {
-        var isDirectory = ObjCBool(false)
-        return self.default.fileExists(atPath: filePath, isDirectory: &isDirectory)
-    }
-}
-
+ 
 func resizeImage(image: UIImage, width: CGFloat) -> UIImage {
   let size = CGSize(width: width, height:
                       image.size.height * width / image.size.width)

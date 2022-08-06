@@ -5,14 +5,13 @@ import Foundation
 class NewsView: UIViewController{
    
   // MARK: Feeds
-  var news = [News]()
-  var images = [Int:UIImage?]() {
-    // news dependent on images
+  var news = [News]() {
     didSet {
       tableview.reloadData()
       spinner.stopAnimating()
     }
   }
+  
   
   // MARK: Properties
   @Injected private var viewModel: NewsViewModel
@@ -67,6 +66,7 @@ class NewsView: UIViewController{
     
     Task.detached(priority: .medium) {
       try await self._fetchingNews()
+      
     }
   }
    
@@ -98,13 +98,15 @@ class NewsView: UIViewController{
     let type: NewsType = hasBackup ? .loadBackup : .default
     do {
       let newsFeed = try await viewModel.fetchingNewsFeed(type: type)
-      self.news = newsFeed.news
-      self.images = newsFeed.images
+      self.news = newsFeed
+      
     }
     catch {
       print(error)
     }
   }
+  
+ 
 }
 
 //MARK: tableview delegates
@@ -120,13 +122,13 @@ extension NewsView: UITableViewDelegate, UITableViewDataSource, UIScrollViewDele
     let date = dateString!.formatted(date: .complete, time: .shortened)
  
     //cell config
-    cell.configure(text: news.title, author: (news.author != nil) ? "來源：\(news.author!)" : "", image: images[indexPath.row]!, date: date)
+    cell.configure(text: news.title, author: (news.author != nil) ? "來源：\(news.author!)" : "", key: news.urlToImage , date: date)
     return cell
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     let selectedNews = news[indexPath.row].url
-    let vc = NewsDetail()
+    let vc = NewsWebView()
     vc.link = selectedNews
     self.navigationController?.pushViewController(vc, animated: true)
   }

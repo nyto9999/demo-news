@@ -1,8 +1,8 @@
-import Foundation
 import UIKit
+import Kingfisher
 
 class NewsCell: UITableViewCell {
-  
+  let processor = RoundCornerImageProcessor(cornerRadius: 18)
   // MARK: Layouts
   private var _titleLabel: UILabel = {
     let label = UILabel()
@@ -20,6 +20,8 @@ class NewsCell: UITableViewCell {
   
   private var _imageView: UIImageView = {
     let image = UIImageView()
+    image.sizeToFit()
+    image.heightAnchor.constraint(equalTo: image.widthAnchor, multiplier: 0.7).isActive = true
     image.translatesAutoresizingMaskIntoConstraints = false
     return image
   }()
@@ -35,6 +37,7 @@ class NewsCell: UITableViewCell {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     _setupViews()
     _setupConstraints()
+    
   }
   
   // MARK: UI
@@ -50,7 +53,7 @@ class NewsCell: UITableViewCell {
       "author": _authorLabel,
       "image" : _imageView,
       "date"  : _dateLabel]
-
+    
     contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[title]-[author]-[image]-[date]-|", options: [], metrics: nil, views: vd))
     contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(10)-[title]-(10)-|", options: [], metrics: nil, views: vd))
     contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(10)-[author]-(10)-|", options: [], metrics: nil, views: vd))
@@ -59,17 +62,58 @@ class NewsCell: UITableViewCell {
   }
   
   // MARK: Methods
-  func configure(text: String, author: String, image: UIImage?, date: String) {
-    if let data = image?.jpeg(.lowest),
-       let img = UIImage(data: data)
-    {
-      _imageView.image = resizeImage(image: img, width: 320)
+  func configure(text: String, author: String, key: String?, date: String) {
+    
+    if let key = key {
+      ImageCache.default.isCached(forKey: key) ?
+      _getCachedImage(key: key) :
+      _fetchImage(key: key)
     }
+    
     _titleLabel.text   = text
     _authorLabel.text  = author
     _dateLabel.text    = date
-  }
     
+  }
+  
+  private func _getCachedImage(key: String) {
+    
+    ImageCache.default.retrieveImage(
+      forKey: key,
+      completionHandler: { result in
+        switch result {
+          case .success(let cached):
+            print("cached")
+            self._imageView.image = cached.image
+          case .failure(let error):
+            print(error)
+        }
+      })
+  }
+  
+  private func _fetchImage(key: String) {
+    guard let url = URL(string: key) else { return }
+    
+    let resource = ImageResource(downloadURL: url, cacheKey: key)
+    self._imageView.kf.indicatorType = .activity
+    self._imageView.kf.setImage(
+      with: resource,
+      options: [.processor(processor)],
+      completionHandler: { result in
+        switch result {
+          case .success(let result):
+            print("fetching")
+            guard let data = result.image.jpeg(.lowest),
+                  let img = UIImage(data: data)
+            else { return }
+            self._imageView.image = img
+          case .failure(let error):
+            print(error)
+        }
+      })
+  }
+  
+  
   override func prepareForReuse() {
     _titleLabel.text  = nil
     _authorLabel.text = nil
