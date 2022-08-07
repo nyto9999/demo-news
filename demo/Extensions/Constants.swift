@@ -25,6 +25,8 @@ enum Constants {
     case taiwan = "tw"
   }
   
+  
+  
   enum Category:String, CaseIterable {
     case 財經 = "business"
     case 娛樂 = "entertainment"
@@ -34,6 +36,11 @@ enum Constants {
     case 體育 = "sports"
     case 科技 = "technology"
   }
+  
+   
+  
+  
+  
   
   enum isoCountryCode:String, CaseIterable {
     case ae = "ae"
@@ -91,6 +98,13 @@ enum Constants {
   }
  
 }
+
+
+
+
+
+
+
 
 
 

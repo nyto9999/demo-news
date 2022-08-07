@@ -4,6 +4,7 @@ enum NewsProvider {
   case newsPath
   case searchPath(searchText: String)
   case countryPath(code: String)
+  case category(type: String)
 }
  
 // MARK: Endpoint
@@ -25,6 +26,8 @@ extension NewsProvider: Endpoint {
         return "/v2/top-headlines"
       case .searchPath(searchText:):
         return "/v2/everything"
+      case .category(type:):
+        return "/v2/top-headlines"
     }
   }
   
@@ -40,12 +43,14 @@ extension NewsProvider: Endpoint {
         return ["q" : searchText]
       case .countryPath(code: let code):
         return ["country": code]
+      case .category(type: let type):
+        return ["category" : type]
     }
   }
  
   var method: HTTPMethod {
     switch self {
-      case .newsPath,.searchPath(searchText:), .countryPath(code:):
+      case .newsPath,.searchPath(searchText:), .countryPath(code:), .category(type:):
         return .get
     }
   }

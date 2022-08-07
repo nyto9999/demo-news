@@ -7,6 +7,7 @@ enum NewsType {
   case `default`
   case backup
   case loadBackup
+  case category(type: String)
 }
 
 final class NewsClient: APIClient, NewsClientProtocol {
@@ -18,6 +19,8 @@ final class NewsClient: APIClient, NewsClientProtocol {
         break
       case .search(let searchText):
         request = NewsProvider.searchPath(searchText: searchText).reuqest
+      case .category(type: let type):
+        request = NewsProvider.category(type: type).reuqest
     }
     
     let data = try await fetch(for: request)

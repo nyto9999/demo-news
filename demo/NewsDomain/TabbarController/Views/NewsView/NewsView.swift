@@ -19,7 +19,6 @@ class NewsView: UIViewController{
   @Injected private var viewModel: NewsViewModel
   var dateFormatter = Constants.dateFormatter
   var lastContentOffset: CGFloat = 0
-  var hasBackup:Bool = FileManager().fileExists(atPath: FileManager().backupFilePath()!.path)
   
   // MARK: Layouts
   lazy var tableview:UITableView = {
@@ -41,8 +40,9 @@ class NewsView: UIViewController{
     let hstack = NewsViewHstack()
     Constants.Category.allCases.forEach {
       let button = UIButton()
-      button.setTitle(" \($0) ", for: .normal)
+      button.setTitle("  \($0)  ", for: .normal)
       button.titleLabel?.font = .systemFont(ofSize: 24)
+      
       button.backgroundColor = .systemGray
       button.layer.cornerRadius = 5
       button.isUserInteractionEnabled = true
@@ -66,14 +66,15 @@ class NewsView: UIViewController{
     spinner.startAnimating()
     
     Task.detached(priority: .medium) {
-      try await self._fetchingNews()
+      try await self._fetchingNews(type: .default)
     }
   }
   
-  @objc func tapped(sender: UIButton) {
-    let type: Constants.Category = .大眾
+  @objc func tapped(sender: UIButton) async throws {
     if let text = sender.titleLabel?.text {
-      
+      Task.detached(priority: .medium) {
+        try await self._fetchingNews(type: .category(type: text))
+      }
     }
     
   }
@@ -102,8 +103,9 @@ class NewsView: UIViewController{
   }
    
   // MARK: Actions
-  private func _fetchingNews() async throws {
-    let type: NewsType = hasBackup ? .loadBackup : .default
+  private func _fetchingNews(type: NewsType) async throws {
+    news.removeAll()
+    images.removeAll()
     do {
       let newsFeed = try await viewModel.fetchingNewsFeed(type: type)
       
