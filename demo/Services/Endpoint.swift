@@ -23,7 +23,7 @@ extension Endpoint {
     
     
     var queryItems = [
-      URLQueryItem(name: "pagesize", value: "100")
+      URLQueryItem(name: "pagesize", value: "10")
     ]
     
     if let params = params, method == .get {

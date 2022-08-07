@@ -10,10 +10,13 @@ class SearchView: UIViewController {
       spinner.stopAnimating()
     }
   }
-   
+  var images: [ImageRecord] = []
+  var pendingOperations = PendingOperations()
+  var searchable = false
   // MARK: Properties
   @Injected var viewModel: NewsViewModel
   var dateFormatter = Constants.dateFormatter
+  
   
   // MARK: Layouts
   let searbar = UISearchBar()
@@ -68,24 +71,27 @@ class SearchView: UIViewController {
 
 // MARK: searchbar delegates
 extension SearchView: UISearchBarDelegate {
-  func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-    print("begin edting")
-  }
-  
-  func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-    print("end editing")
-  }
-  
   func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-    Task(priority: .medium) {
+    
+    Task(priority: .high) {
       let newsFeed = try await viewModel.fetchingNewsFeed(type: .search(searchText: searchBar.text!))
+      newsFeed.forEach {
+        let imageRecord = ImageRecord(key: $0.urlToImage ?? "", url: URL(string: $0.urlToImage ?? ""))
+        images.append(imageRecord)
+      }
+      
       self.news = newsFeed
-      self.spinner.startAnimating()
+      self.searbar.endEditing(true)
+      self.searchable = true
     }
   }
-   
   func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-    print(searchText)
+    if searchable {
+      self.news.removeAll()
+      self.images.removeAll()
+      self.pendingOperations.downloadsInProgress.removeAll()
+      self.tableview.reloadData()
+    }
   }
 }
 
@@ -101,9 +107,47 @@ extension SearchView: UITableViewDelegate, UITableViewDataSource {
     let dateString = dateFormatter.date(from: news.publishedAt)
     let date = dateString!.formatted(date: .complete, time: .shortened)
  
+    let imageDetails = images[indexPath.row]
+ 
     //cell config
-    cell.configure(text: news.title, author: (news.author != nil) ? "來源：\(news.author!)" : "", key: news.urlToImage, date: date)
+    cell.configure(text: news.title, author: (news.author != nil) ? "來源：\(news.author!)" : "", image: imageDetails.image , date: date)
+    
+    switch imageDetails.state {
+      case .new, .downloaded:
+        startOperations(for: imageDetails, at: indexPath)
+      case .failed:
+        print("fail")
+    }
     return cell
+  }
+  
+  //MARK: ImageOperation
+  func startOperations(for imageRecord: ImageRecord, at indexPath: IndexPath) {
+    switch (imageRecord.state) {
+    case .new:
+      startDownload(for: imageRecord, at: indexPath)
+    default:
+        break
+    }
+  }
+  
+  func startDownload(for imageRecord: ImageRecord, at indexPath: IndexPath) {
+    guard pendingOperations.downloadsInProgress[indexPath] == nil else {
+      return
+    }
+    let downloader = ImageDownloader(imageRecord)
+    
+    downloader.completionBlock = {
+      if downloader.isCancelled {
+        return
+      }
+      DispatchQueue.main.async {
+        self.pendingOperations.downloadsInProgress.removeValue(forKey: indexPath)
+        self.tableview.reloadRows(at: [indexPath], with: .fade)
+      }
+    }
+    pendingOperations.downloadsInProgress[indexPath] = downloader
+    pendingOperations.downloadQueue.addOperation(downloader)
   }
 }
 

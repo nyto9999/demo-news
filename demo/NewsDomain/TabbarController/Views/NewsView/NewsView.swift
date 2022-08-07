@@ -11,6 +11,8 @@ class NewsView: UIViewController{
       spinner.stopAnimating()
     }
   }
+  var images: [ImageRecord] = []
+  let pendingOperations = PendingOperations()
   
   
   // MARK: Properties
@@ -66,7 +68,6 @@ class NewsView: UIViewController{
     
     Task.detached(priority: .medium) {
       try await self._fetchingNews()
-      
     }
   }
    
@@ -98,8 +99,12 @@ class NewsView: UIViewController{
     let type: NewsType = hasBackup ? .loadBackup : .default
     do {
       let newsFeed = try await viewModel.fetchingNewsFeed(type: type)
-      self.news = newsFeed
       
+      newsFeed.forEach {
+        let imageRecord = ImageRecord(key: $0.urlToImage ?? "", url: URL(string: $0.urlToImage ?? ""))
+        images.append(imageRecord)
+      }
+      self.news = newsFeed
     }
     catch {
       print(error)
@@ -120,9 +125,19 @@ extension NewsView: UITableViewDelegate, UITableViewDataSource, UIScrollViewDele
     let cell = tableView.dequeueReusableCell(withIdentifier: NewsCell.id, for: indexPath) as! NewsCell
     let dateString = dateFormatter.date(from: news.publishedAt)
     let date = dateString!.formatted(date: .complete, time: .shortened)
- 
+    let imageDetails = images[indexPath.row]
+    
+
     //cell config
-    cell.configure(text: news.title, author: (news.author != nil) ? "來源：\(news.author!)" : "", key: news.urlToImage , date: date)
+    cell.configure(text: news.title, author: (news.author != nil) ? "來源：\(news.author!)" : "", image: imageDetails.image , date: date)
+    
+    switch imageDetails.state {
+      case .new, .downloaded:
+          startOperations(for: imageDetails, at: indexPath)
+      case .failed:
+        print("fail")
+    }
+    
     return cell
   }
   
@@ -154,7 +169,36 @@ extension NewsView: UITableViewDelegate, UITableViewDataSource, UIScrollViewDele
   }
 
   func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-      self.lastContentOffset = scrollView.contentOffset.y
+    self.lastContentOffset = scrollView.contentOffset.y
+  }
+ 
+  func startOperations(for imageRecord: ImageRecord, at indexPath: IndexPath) {
+    switch (imageRecord.state) {
+    case .new:
+      startDownload(for: imageRecord, at: indexPath)
+    default:
+      break
+    }
+  }
+  
+  func startDownload(for imageRecord: ImageRecord, at indexPath: IndexPath) {
+    guard pendingOperations.downloadsInProgress[indexPath] == nil else {
+      return
+    }
+    let downloader = ImageDownloader(imageRecord)
+    
+    downloader.completionBlock = {
+      if downloader.isCancelled {
+        return
+      }
+      
+      DispatchQueue.main.async {
+        self.pendingOperations.downloadsInProgress.removeValue(forKey: indexPath)
+        self.tableview.reloadRows(at: [indexPath], with: .fade)
+      }
+    }
+    pendingOperations.downloadsInProgress[indexPath] = downloader
+    pendingOperations.downloadQueue.addOperation(downloader)
   }
 }
 
