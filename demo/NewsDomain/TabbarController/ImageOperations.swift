@@ -27,7 +27,7 @@ class PendingOperations {
   
   
 }
-
+ //test
 class ImageDownloader: Operation {
   let imageRecord: ImageRecord
   
