@@ -25,7 +25,6 @@ class PendingOperations {
     return queue
   }()
   
-  
 }
  //test
 class ImageDownloader: Operation {

@@ -17,8 +17,8 @@ public class NewsViewHstack: UIView {
     let stackView = UIStackView(frame: .zero)
     stackView.translatesAutoresizingMaskIntoConstraints = false
     stackView.axis = .horizontal
-    stackView.alignment = .fill
-    stackView.distribution = .fill
+    stackView.alignment = .center
+    stackView.distribution = .equalCentering
     stackView.spacing = 18
     return stackView
   }()
@@ -27,7 +27,6 @@ public class NewsViewHstack: UIView {
   public override func didMoveToSuperview() {
     super.didMoveToSuperview()
     translatesAutoresizingMaskIntoConstraints = false
-    clipsToBounds = true
     addSubview(scrollView)
     scrollView.addSubview(stackView)
     setNeedsUpdateConstraints()

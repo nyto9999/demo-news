@@ -40,15 +40,14 @@ class NewsView: UIViewController{
   lazy var categoryHstack:NewsViewHstack = {
     let hstack = NewsViewHstack()
     Constants.Category.allCases.forEach {
-      let label = UILabel()
-      label.text = "\($0)"
-      label.font = label.font.withSize(28)
-      label.backgroundColor = .systemGray6
-      label.layer.masksToBounds = true
-      label.layer.cornerRadius = 5
-      label.tag
-      label.isUserInteractionEnabled = true
-      hstack.add(view: label)
+      let button = UIButton()
+      button.setTitle(" \($0) ", for: .normal)
+      button.titleLabel?.font = .systemFont(ofSize: 24)
+      button.backgroundColor = .systemGray
+      button.layer.cornerRadius = 5
+      button.isUserInteractionEnabled = true
+      button.addTarget(self, action: #selector(tapped(sender:)), for: .touchUpInside)
+      hstack.add(view: button)
     }
     hstack.showsHorizontalScrollIndicator = false
     return hstack
@@ -69,6 +68,14 @@ class NewsView: UIViewController{
     Task.detached(priority: .medium) {
       try await self._fetchingNews()
     }
+  }
+  
+  @objc func tapped(sender: UIButton) {
+    let type: Constants.Category = .大眾
+    if let text = sender.titleLabel?.text {
+      
+    }
+    
   }
    
   // MARK: UI
@@ -174,10 +181,10 @@ extension NewsView: UITableViewDelegate, UITableViewDataSource, UIScrollViewDele
  
   func startOperations(for imageRecord: ImageRecord, at indexPath: IndexPath) {
     switch (imageRecord.state) {
-    case .new:
-      startDownload(for: imageRecord, at: indexPath)
-    default:
-      break
+      case .new:
+        startDownload(for: imageRecord, at: indexPath)
+      default:
+        break
     }
   }
   
