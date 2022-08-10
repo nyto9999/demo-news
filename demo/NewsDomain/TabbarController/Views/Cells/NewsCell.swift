@@ -25,7 +25,6 @@ class NewsCell: UITableViewCell {
     let image = UIImageView()
     image.backgroundColor = .clear
     image.layer.cornerRadius = 7
-
     image.translatesAutoresizingMaskIntoConstraints = false
     return image
   }()

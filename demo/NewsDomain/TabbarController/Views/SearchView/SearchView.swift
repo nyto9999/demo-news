@@ -79,7 +79,7 @@ extension SearchView: UISearchBarDelegate {
         let imageRecord = ImageRecord(key: $0.urlToImage ?? "", url: URL(string: $0.urlToImage ?? ""))
         images.append(imageRecord)
       }
-      
+      //init
       self.news = newsFeed
       self.searbar.endEditing(true)
       self.searchable = true
@@ -87,6 +87,7 @@ extension SearchView: UISearchBarDelegate {
   }
   func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
     if searchable {
+      //inti
       self.news.removeAll()
       self.images.removeAll()
       self.pendingOperations.downloadsInProgress.removeAll()
@@ -99,6 +100,13 @@ extension SearchView: UISearchBarDelegate {
 extension SearchView: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return news.count
+  }
+  
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    let selectedNews = news[indexPath.row].url
+    let vc = NewsWebView()
+    vc.link = selectedNews
+    self.navigationController?.pushViewController(vc, animated: true)
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -138,6 +146,7 @@ extension SearchView: UITableViewDelegate, UITableViewDataSource {
     let downloader = ImageDownloader(imageRecord)
     
     downloader.completionBlock = {
+      print("downloader completed")
       if downloader.isCancelled {
         return
       }
