@@ -37,7 +37,12 @@ class ImageDownloader: Operation {
   override func main() {
     if isCancelled { return }
     
-    guard let url = imageRecord.url else { return }
+    guard let url = URL(string: imageRecord.url?.absoluteString ?? "") else {
+      imageRecord.state = .failed
+      imageRecord.image = UIImage(named: "Failed")
+      return
+    }
+
     guard let imageData = try? Data(contentsOf: url) else { return }
     if isCancelled { return }
     

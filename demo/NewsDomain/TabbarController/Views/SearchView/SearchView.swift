@@ -73,7 +73,7 @@ class SearchView: UIViewController {
 extension SearchView: UISearchBarDelegate {
   func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
     
-    Task(priority: .high) {
+    Task(priority: .medium) {
       let newsFeed = try await viewModel.fetchingNewsFeed(type: .search(searchText: searchBar.text!))
       newsFeed.forEach {
         let imageRecord = ImageRecord(key: $0.urlToImage ?? "", url: URL(string: $0.urlToImage ?? ""))

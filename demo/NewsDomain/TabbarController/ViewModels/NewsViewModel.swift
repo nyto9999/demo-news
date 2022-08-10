@@ -16,7 +16,7 @@ final class NewsViewModel {
 extension NewsViewModel: NewsViewModelProtocol {
   
   func fetchingNewsFeed(type: NewsType) async throws -> [News] {
-    return try await newsClient.receiveData(type: type)
+      return try await newsClient.receiveData(type: type)
   }
   
   //MARK: concurrent

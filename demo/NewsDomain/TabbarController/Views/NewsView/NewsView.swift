@@ -3,7 +3,7 @@ import Resolver
 import Foundation
 
 class NewsView: UIViewController{
-   
+  
   // MARK: Feeds
   var news = [News]() {
     didSet {
@@ -12,13 +12,15 @@ class NewsView: UIViewController{
     }
   }
   var images: [ImageRecord] = []
-  let pendingOperations = PendingOperations()
+  var pendingOperations = PendingOperations()
   
   
   // MARK: Properties
   @Injected private var viewModel: NewsViewModel
   var dateFormatter = Constants.dateFormatter
   var lastContentOffset: CGFloat = 0
+  let hstackTag =
+  [1: "business", 2: "entertainment", 3: "general", 4: "health", 5: "science", 6: "sports", 7: "technology"]
   
   // MARK: Layouts
   lazy var tableview:UITableView = {
@@ -38,21 +40,23 @@ class NewsView: UIViewController{
   
   lazy var categoryHstack:NewsViewHstack = {
     let hstack = NewsViewHstack()
+    var tag = 1
     Constants.Category.allCases.forEach {
       let button = UIButton()
       button.setTitle("  \($0)  ", for: .normal)
       button.titleLabel?.font = .systemFont(ofSize: 24)
-      
+      button.tag = tag
       button.backgroundColor = .systemGray
       button.layer.cornerRadius = 5
       button.isUserInteractionEnabled = true
       button.addTarget(self, action: #selector(tapped(sender:)), for: .touchUpInside)
       hstack.add(view: button)
+      tag += 1
     }
     hstack.showsHorizontalScrollIndicator = false
     return hstack
   }()
- 
+  
   // MARK: Life Cycle
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
@@ -70,15 +74,15 @@ class NewsView: UIViewController{
     }
   }
   
-  @objc func tapped(sender: UIButton) async throws {
-    if let text = sender.titleLabel?.text {
-      Task.detached(priority: .medium) {
-        try await self._fetchingNews(type: .category(type: text))
-      }
+  @objc func tapped(sender: UIButton)  {
+    
+    Task.detached(priority: .medium) { [weak self] in
+      let tag = await self?.hstackTag[sender.tag]
+      try await self?._fetchingNews(type: .category(type: tag!))
     }
     
   }
-   
+  
   // MARK: UI
   private func _setupViews() {
     navigationItem.title = "頭條新聞"
@@ -101,26 +105,29 @@ class NewsView: UIViewController{
     spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
   }
-   
+  
   // MARK: Actions
   private func _fetchingNews(type: NewsType) async throws {
-    news.removeAll()
-    images.removeAll()
-    do {
-      let newsFeed = try await viewModel.fetchingNewsFeed(type: type)
-      
-      newsFeed.forEach {
-        let imageRecord = ImageRecord(key: $0.urlToImage ?? "", url: URL(string: $0.urlToImage ?? ""))
-        images.append(imageRecord)
-      }
+    
+    //init
+    self.news = [News]()
+    self.images = [ImageRecord]()
+    self.pendingOperations = PendingOperations()
+    
+    //fetch
+    let newsFeed = try await viewModel.fetchingNewsFeed(type: type)
+    dump(newsFeed)
+    //load news img
+    newsFeed.forEach {
+      let imageRecord = ImageRecord(key: $0.urlToImage ?? "", url: URL(string: $0.urlToImage ?? ""))
+      images.append(imageRecord)
+    }
+    
+    //refresh
+    DispatchQueue.main.async {
       self.news = newsFeed
     }
-    catch {
-      print(error)
-    }
   }
-  
- 
 }
 
 //MARK: tableview delegates
@@ -136,13 +143,13 @@ extension NewsView: UITableViewDelegate, UITableViewDataSource, UIScrollViewDele
     let date = dateString!.formatted(date: .complete, time: .shortened)
     let imageDetails = images[indexPath.row]
     
-
+    
     //cell config
     cell.configure(text: news.title, author: (news.author != nil) ? "來源：\(news.author!)" : "", image: imageDetails.image , date: date)
     
     switch imageDetails.state {
       case .new, .downloaded:
-          startOperations(for: imageDetails, at: indexPath)
+        startOperations(for: imageDetails, at: indexPath)
       case .failed:
         print("fail")
     }
@@ -161,26 +168,26 @@ extension NewsView: UITableViewDelegate, UITableViewDataSource, UIScrollViewDele
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
     
     if lastContentOffset < scrollView.contentOffset.y {
-        // did move up
-        self.navigationController?.setNavigationBarHidden(true, animated: false)
-        
+      // did move up
+      self.navigationController?.setNavigationBarHidden(true, animated: false)
+      
     } else if lastContentOffset > scrollView.contentOffset.y {
-        // did move down
-        self.navigationController?.setNavigationBarHidden(false, animated: false)
-       
+      // did move down
+      self.navigationController?.setNavigationBarHidden(false, animated: false)
+      
     } else if tableview.contentOffset.y >= (tableview.contentSize.height - tableview.frame.size.height) {
-        // end
+      // end
       //fetch history
     }
     else {
       // did move
     }
   }
-
+  
   func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
     self.lastContentOffset = scrollView.contentOffset.y
   }
- 
+  
   func startOperations(for imageRecord: ImageRecord, at indexPath: IndexPath) {
     switch (imageRecord.state) {
       case .new:
@@ -211,4 +218,4 @@ extension NewsView: UITableViewDelegate, UITableViewDataSource, UIScrollViewDele
   }
 }
 
- 
+

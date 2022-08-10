@@ -44,6 +44,7 @@ extension NewsProvider: Endpoint {
       case .countryPath(code: let code):
         return ["country": code]
       case .category(type: let type):
+        print(type)
         return ["category" : type]
     }
   }

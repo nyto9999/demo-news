@@ -21,6 +21,7 @@ final class NewsClient: APIClient, NewsClientProtocol {
         request = NewsProvider.searchPath(searchText: searchText).reuqest
       case .category(type: let type):
         request = NewsProvider.category(type: type).reuqest
+        print("request url \(request)")
     }
     
     let data = try await fetch(for: request)
