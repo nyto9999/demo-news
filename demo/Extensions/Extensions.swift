@@ -36,7 +36,7 @@ extension UIImage {
  
 func resizeImage(image: UIImage, width: CGFloat) -> UIImage {
   let size = CGSize(width: width, height:
-                      image.size.height * width / image.size.width)
+                      200)
   let renderer = UIGraphicsImageRenderer(size: size)
   let newImage = renderer.image { (context) in
     image.draw(in: renderer.format.bounds)

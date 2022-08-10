@@ -39,7 +39,8 @@ class ImageDownloader: Operation {
     
     guard let url = URL(string: imageRecord.url?.absoluteString ?? "") else {
       imageRecord.state = .failed
-      imageRecord.image = UIImage(named: "Failed")
+      imageRecord.image = nil
+      
       return
     }
 

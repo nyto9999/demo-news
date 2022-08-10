@@ -98,9 +98,10 @@ class NewsView: UIViewController{
       "tableview": tableview,
       "spinner" : spinner]
     
-    view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[hstack]-[tableview]-|", options: [], metrics: nil, views: vd))
+    view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[hstack]-[tableview]|", options: [], metrics: nil, views: vd))
     view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(10)-[hstack]-(10)-|", options: [], metrics: nil, views: vd))
-    view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(10)-[tableview]-(10)-|", options: [], metrics: nil, views: vd))
+    view.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|[tableview]|", options: [], metrics: nil, views: vd))
+    
     categoryHstack.heightAnchor.constraint(equalTo: categoryHstack.widthAnchor, multiplier: 0.125).isActive = true
     spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true

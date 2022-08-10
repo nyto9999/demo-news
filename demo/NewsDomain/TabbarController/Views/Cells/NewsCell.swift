@@ -7,27 +7,33 @@ class NewsCell: UITableViewCell {
     let label = UILabel()
     label.numberOfLines = 0
     label.lineBreakMode = NSLineBreakMode.byWordWrapping
+    label.font = UIFont.systemFont(ofSize: 24, weight: .regular)
+    label.textColor = .darkText
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
   }()
   
   private var _authorLabel: UILabel = {
     let label = UILabel()
+    label.font = UIFont.systemFont(ofSize: 22, weight: .semibold)
+    label.textColor = .darkGray
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
   }()
   
   private var _imageView: UIImageView = {
     let image = UIImageView()
-    image.backgroundColor = .gray
+    image.backgroundColor = .clear
     image.layer.cornerRadius = 7
-    image.heightAnchor.constraint(equalTo: image.widthAnchor, multiplier: 0.7).isActive = true
+
     image.translatesAutoresizingMaskIntoConstraints = false
     return image
   }()
   
   private var _dateLabel: UILabel = {
     let label = UILabel()
+    label.textColor = .systemGray
+    label.font = UIFont.systemFont(ofSize: 15, weight: .medium)
     label.translatesAutoresizingMaskIntoConstraints = false
     return label
   }()
@@ -37,7 +43,6 @@ class NewsCell: UITableViewCell {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     _setupViews()
     _setupConstraints()
-    
   }
   
   // MARK: UI
@@ -54,7 +59,7 @@ class NewsCell: UITableViewCell {
       "image" : _imageView,
       "date"  : _dateLabel]
     
-    contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[title]-[author]-[image]-[date]-|", options: [], metrics: nil, views: vd))
+    contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-[author]-[title]-[image]-[date]-|", options: [], metrics: nil, views: vd))
     contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(10)-[title]-(10)-|", options: [], metrics: nil, views: vd))
     contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(10)-[author]-(10)-|", options: [], metrics: nil, views: vd))
     contentView.addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "H:|-(10)-[image]-(10)-|", options: [], metrics: nil, views: vd))
@@ -63,6 +68,7 @@ class NewsCell: UITableViewCell {
   
   // MARK: Methods
   func configure(text: String, author: String, image: UIImage?, date: String) {
+    
     _imageView.image   = image?.withRoundedCorners(radius: 7)
     _titleLabel.text   = text
     _authorLabel.text  = author
