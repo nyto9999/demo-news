@@ -11,16 +11,19 @@ enum NewsType {
 }
 
 final class NewsClient: APIClient, NewsClientProtocol {
-  var request = NewsProvider.newsPath.reuqest
+  var request = UriProvider.newsPath.reuqest
   
   func receiveData(type: NewsType) async throws -> [News] {
+    
+    //Todo: load local tempary file 
+    
     switch type {
       case .default, .backup, .loadBackup:
         break
       case .search(let searchText):
-        request = NewsProvider.searchPath(searchText: searchText).reuqest
+        request = UriProvider.searchPath(searchText: searchText).reuqest
       case .category(type: let type):
-        request = NewsProvider.category(type: type).reuqest
+        request = UriProvider.category(type: type).reuqest
         print("request url \(request)")
     }
     

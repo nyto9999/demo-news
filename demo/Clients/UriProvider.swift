@@ -1,6 +1,6 @@
 import Foundation
 
-enum NewsProvider {
+enum UriProvider {
   case newsPath
   case searchPath(searchText: String)
   case countryPath(code: String)
@@ -8,7 +8,7 @@ enum NewsProvider {
 }
  
 // MARK: Endpoint
-extension NewsProvider: Endpoint {
+extension UriProvider: Endpoint {
   
   var scheme: String {
     "https"

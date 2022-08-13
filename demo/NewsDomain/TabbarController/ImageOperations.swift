@@ -40,11 +40,10 @@ class ImageDownloader: Operation {
     guard let url = URL(string: imageRecord.url?.absoluteString ?? "") else {
       imageRecord.state = .failed
       imageRecord.image = nil
-      
       return
     }
-
     guard let imageData = try? Data(contentsOf: url) else { return }
+    
     if isCancelled { return }
     
     if !imageData.isEmpty {

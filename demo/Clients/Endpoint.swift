@@ -11,9 +11,9 @@ protocol Endpoint {
 
 extension Endpoint {
   
-  var apiKey: String {
-    "402d3a3e2bb44751b9d8b9618c6a6fca"
-  }
+//  var apiKey: String {
+//    "402d3a3e2bb44751b9d8b9618c6a6fca"
+//  }
   
   var urlComponents: URLComponents {
     var components = URLComponents()
@@ -31,9 +31,6 @@ extension Endpoint {
         URLQueryItem(name: "\($0)", value: "\($1)")
       })
     }
-    
-    ///api key at the end
-    queryItems.append(URLQueryItem(name: "apiKey", value: apiKey))
      
     components.queryItems = queryItems
     return components

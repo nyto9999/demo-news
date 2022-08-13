@@ -109,7 +109,7 @@ class NewsView: UIViewController{
   
   // MARK: Actions
   private func _fetchingNews(type: NewsType) async throws {
-    
+     
     //init
     self.news = [News]()
     self.images = [ImageRecord]()
@@ -117,11 +117,15 @@ class NewsView: UIViewController{
     
     //fetch
     let newsFeed = try await viewModel.fetchingNewsFeed(type: type)
-    dump(newsFeed)
+//    dump(newsFeed)
     //load news img
     newsFeed.forEach {
       let imageRecord = ImageRecord(key: $0.urlToImage ?? "", url: URL(string: $0.urlToImage ?? ""))
-      images.append(imageRecord)
+      
+      DispatchQueue.main.async {
+        self.images.append(imageRecord)
+      }
+      
     }
     
     //refresh
